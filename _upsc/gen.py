@@ -8,7 +8,8 @@ from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import notes_p1, notes_p2  # noqa: E402
+import notes_p1, notes_p2, craft_p1, craft_p2  # noqa: E402
+from approach2026 import A as APPROACH  # noqa: E402
 from y2026 import Y2026  # noqa: E402
 
 e = html.escape
@@ -22,6 +23,7 @@ SUBJECTS = [
     ("contracts-mercantile-law", "Law of Contracts and Mercantile Law", "II", "CONTRACTS", notes_p2.CONTRACTS, "Law of Contracts and Mercantile Law", "Contracts & Mercantile"),
     ("contemporary-legal-developments", "Contemporary Legal Developments", "II", "CLD", notes_p2.CLD, "Contemporary Legal Developments", "Contemporary Developments"),
 ]
+CRAFT = {"CAL": craft_p1.CAL, "IL": craft_p1.IL, "CRIMES": craft_p2.CRIMES, "TORTS": craft_p2.TORTS, "CONTRACTS": craft_p2.CONTRACTS, "CLD": craft_p2.CLD}
 EXTRA_TITLES = {("TORTS", 10): "Conspiracy."}
 
 CSS = """<style>
@@ -43,6 +45,12 @@ details.u-q{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}de
 table.u-t{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--paper);border-radius:14px;overflow:hidden}
 .u-t th,.u-t td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}.u-t th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .u-note{font-size:14px;color:var(--muted)}
+.u-decode{background:#F3E3D5;border-radius:12px;padding:12px 14px;margin:12px 0;font-size:15.5px}.u-decode b{color:var(--copper)}
+.u-open{font-family:Fraunces,Georgia,serif;font-size:18px;color:var(--teal);border-left:3px solid var(--copper);padding-left:12px;margin:4px 0}
+.u-frame{padding-left:20px;margin:0}.u-frame li{margin:4px 0}.u-edge{padding-left:18px;margin:0}.u-edge li{margin:4px 0;font-size:15.5px}
+.u-flow{font:600 14px Inter;background:var(--cream);border:1px dashed var(--copper);border-radius:10px;padding:10px 12px}
+.u-ap{margin-top:6px;font-size:14.5px;background:var(--cream);border-radius:10px;padding:8px 10px}.u-ap b{color:var(--teal)}
+.u-method li{margin:6px 0}
 </style>"""
 
 FIND_JS = """<script>(function(){var f=document.getElementById('ufind');if(!f)return;f.addEventListener('input',function(){var q=f.value.toLowerCase().trim();
@@ -62,8 +70,8 @@ def load():
             qs = [dict(q, new=False) for q in t["qs"]]
             for c, un, sub, qid, marks, text in Y2026:
                 if c == code and un == n:
-                    qs.append({"y": 2026, "q": f"{qid}, {marks} marks", "t": text, "sub": sub, "new": True})
-            units.append({"n": n, "title": t["title"].rstrip("."), "qs": qs, "note": notes.get(n)})
+                    qs.append({"y": 2026, "q": f"{qid}, {marks} marks", "t": text, "sub": sub, "new": True, "ap": APPROACH.get(qid, "")})
+            units.append({"n": n, "title": t["title"].rstrip("."), "qs": qs, "note": notes.get(n), "craft": CRAFT[code].get(n)})
         misc = topics.get(99, {"qs": []})["qs"]
         out.append(dict(slug=slug, title=title, paper=paper, code=code, short=short, units=units, misc=misc))
     return out
@@ -81,7 +89,8 @@ def qlist(qs):
         for q in items:
             cls = "y n" if q.get("new") else "y"
             ref = f' <span class="u-note">[{e(q["q"])}]</span>' if q.get("q") else ""
-            h.append(f'<li><span class="{cls}">{q["y"]}</span>{e(q["t"])}{ref}</li>')
+            ap = f'<div class="u-ap"><b>How to approach:</b> {e(q["ap"])}</div>' if q.get("ap") else ""
+            h.append(f'<li><span class="{cls}">{q["y"]}</span>{e(q["t"])}{ref}{ap}</li>')
         h.append("</ol>")
     return "".join(h)
 
@@ -93,14 +102,29 @@ def unit_html(u):
     if years and years[0] == years[-1]:
         stat = f'Asked <b>{len(u["qs"])}</b> time{"s" if len(u["qs"]) != 1 else ""} · {years[0]}'
     n = u["note"] or {}
+    c = u.get("craft") or {}
     parts = [f'<section class="u-unit" id="u{u["n"]}"><span class="u-stat">Syllabus unit {u["n"]} · {stat}</span>',
              f'<h2>{e(u["title"])}</h2>']
+    if c.get("decode"):
+        parts.append(f'<div class="u-decode"><b>Decode the demand.</b> {e(c["decode"])}</div>')
+    if c.get("intro"):
+        parts.append(f'<h3>Open with</h3><p class="u-open">{e(c["intro"])}</p>')
+    if c.get("frame"):
+        parts.append("<h3>Answer frame</h3><ol class=\"u-frame\">" + "".join(f"<li>{e(x)}</li>" for x in c["frame"]) + "</ol>")
     if n.get("core"):
-        parts.append(f'<p>{e(n["core"])}</p>')
+        parts.append(f'<h3>Concept in brief</h3><p>{e(n["core"])}</p>')
     if n.get("law"):
         parts.append("<h3>Key provisions</h3><ul class=\"u-law\">" + "".join(f"<li>{e(x)}</li>" for x in n["law"]) + "</ul>")
     if n.get("cases"):
-        parts.append("<h3>Leading cases</h3><ul class=\"u-cases\">" + "".join(f"<li><i>{e(c)}</i>: {e(h)}</li>" for c, h in n["cases"]) + "</ul>")
+        parts.append("<h3>Leading cases (cite the ratio, not the facts)</h3><ul class=\"u-cases\">" + "".join(f"<li><i>{e(cs)}</i>: {e(hd)}</li>" for cs, hd in n["cases"]) + "</ul>")
+    if c.get("edge"):
+        parts.append("<h3>Interdisciplinary edge</h3><ul class=\"u-edge\">" + "".join(f"<li>{e(x)}</li>" for x in c["edge"]) + "</ul>")
+    if c.get("flow"):
+        parts.append(f'<h3>Draw this</h3><p class="u-flow">{e(c["flow"])}</p>')
+    if c.get("lens"):
+        parts.append(f'<h3>Critical lens</h3><p>{e(c["lens"])}</p>')
+    if c.get("close"):
+        parts.append(f'<h3>Close with</h3><p class="u-open">{e(c["close"])}</p>')
     if u["qs"]:
         parts.append(f'<details class="u-q"{" open" if any(q.get("new") for q in u["qs"]) else ""}><summary>Previous-year questions ({len(u["qs"])})</summary>{qlist(u["qs"])}</details>')
     parts.append("</section>")
@@ -120,7 +144,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
         if s["misc"]:
             misc = f'<section class="u-unit" id="misc"><h2>Questions spanning several units</h2><details class="u-q" open><summary>Previous-year questions ({len(s["misc"])})</summary>{qlist([dict(q, new=False) for q in s["misc"]])}</details></section>'
         body = (CSS + f'<div class="u-hero"><span class="pill">UPSC CSE Law Optional · Paper {s["paper"]}</span>'
-                f'<h1>{e(s["title"])}</h1><p class="dek">Unit-by-unit notes with the key provisions, leading cases and every previous-year question from 2013 to 2026 ({n_q} questions), arranged in the order of the official syllabus.</p>'
+                f'<h1>{e(s["title"])}</h1><p class="dek">Each unit, in syllabus order, shows how to decode the question, frame the answer, which provisions and cases to cite, an interdisciplinary edge and a closing line, followed by every previous-year question from 2013 to 2026 ({n_q} questions).</p>'
                 f'<p class="meta"><a href="/upsc-law/">UPSC Law Optional desk</a> · New 2026 questions are marked in copper.</p></div>'
                 f'<input id="ufind" class="u-find" placeholder="Filter units: try a case, article or section, e.g. Art. 356, Bolam, s. 74" aria-label="Filter units">'
                 f'{toc}{units}{misc}'
@@ -155,7 +179,18 @@ def build(page, write, SITE, NAME, ORG, TODAY):
     body = (CSS + f'<div class="u-hero"><span class="pill">Student desk</span><h1>UPSC Law Optional desk</h1>'
             f'<p class="dek">Both papers of the Civil Services (Main) Law optional, arranged unit by unit as in the official syllabus, with original notes, key provisions, leading cases and {total} previous-year questions from 2013 to 2026.</p></div>'
             + "".join(cards)
-            + '<h2>How to use this desk</h2><p>Open a subject and read each unit in three passes: the core idea, the provisions and cases you must cite, then the questions UPSC has actually asked. The question count beside each unit shows where the examiners return most often. Use the filter box on each page to find a case, article or section across all units.</p>'
+            + '<h2>The answer method behind every unit</h2><p>High-scoring Law optional answers share a pattern: they answer the exact question, build on sections and the ratio of cases, add a layer from outside the bare law, and end by looking forward. Each unit on this desk is written to that pattern.</p>'
+            + '<ol class="u-method">'
+            + '<li><b>Decode the demand.</b> Read the directive word first. <i>Discuss</i> wants both sides; <i>critically examine</i> or <i>evaluate</i> wants a verdict after testing the claim; <i>elucidate</i> or <i>explain</i> wants clarity with illustrations; <i>comment</i> wants a reasoned opinion. A quoted statement is a thesis to test, not to repeat. Count the parts of the question and answer every one.</li>'
+            + '<li><b>Budget words by marks.</b> About 150 words for 10 marks, 200 for 15 and 250 for 20.</li>'
+            + '<li><b>Open precisely.</b> One or two lines: a definition, the governing Article or section, or a sharp framing of the tension. No history lessons.</li>'
+            + '<li><b>Build the body under headings.</b> Each heading makes one point and backs it with a provision and a case. Cite the ratio in a line; skip the facts unless the question is about them.</li>'
+            + '<li><b>Solve problems with IRAC.</b> Issue, Rule (section plus case), Application to the facts, Conclusion. Commit to an answer.</li>'
+            + '<li><b>Add the interdisciplinary edge.</b> Law Commission and committee reports, comparative law, jurisprudence, economics, data and current developments: one or two per answer, chosen for relevance.</li>'
+            + '<li><b>Show a critical lens.</b> One honest limitation or counter-view shows judgement.</li>'
+            + '<li><b>Draw when it helps.</b> A flowchart, timeline, table or zone diagram in a 15- or 20-mark answer saves words.</li>'
+            + '<li><b>Close forward.</b> End with a way forward or a constitutional value, not a summary.</li></ol>'
+            + '<p>Every unit page follows this order: decode the demand, an opening line, an answer frame, the concept, provisions and cases, the interdisciplinary edge, a diagram where useful, a critical lens and a closing line. Each 2026 question also carries a note on how to approach it.</p>'
             + f'<h2>Most-asked units, 2013–2026</h2><table class="u-t"><tr><th>Qs</th><th>Unit</th><th>Subject</th></tr>{toprows}</table>'
             + f'<h2>The 2026 papers, mapped to the syllabus</h2><p class="u-note">Every question from the 2026 Main examination (Law Paper I and Paper II), linked to the unit that covers it.</p><table class="u-t"><tr><th>Q</th><th>Question</th><th>Unit</th></tr>{rows26}</table>'
             + '<h2>Sources and method</h2><p>Questions are taken from the official UPSC question papers. Notes are written by Doctrines &amp; Laws from primary sources: the Constitution of India, Central Acts on India Code, treaties and the judgments themselves. For depth, pair them with standard texts such as M.P. Jain (Indian Constitutional Law), Malcolm Shaw (International Law), Ratanlal &amp; Dhirajlal (Law of Crimes and Law of Torts) and Pollock &amp; Mulla (Indian Contract Act). We do not reproduce coaching notes or toppers\' copies.</p>'
