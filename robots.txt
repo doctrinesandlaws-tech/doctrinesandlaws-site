@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://doctrinesandlaws.netlify.app/sitemap.xml
