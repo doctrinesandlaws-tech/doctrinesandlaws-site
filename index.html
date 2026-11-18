@@ -286,7 +286,7 @@ footer p{max-width:860px;margin:0 0 10px}
     <div>
       <div class="kicker">A free legal-literacy hub</div>
       <h1>Law, <em>explained.</em></h1>
-      <p class="lede">Plain-language explainers on Indian judgments and statutes, this week's Supreme Court rulings, know-your-rights guides and a study desk for law students. Free to use, with no sign-up required.</p>
+      <p class="lede">Plain-language explainers on Indian judgments and statutes, this week’s Supreme Court rulings, know-your-rights guides and a study desk for law students. Free to use, with no sign-up required.</p>
       <div class="search" id="heroSearch" role="button" tabindex="0" aria-label="Search the site">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5E6B6A" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <span>Search, e.g. &ldquo;What are my rights on arrest?&rdquo;</span>
@@ -320,7 +320,7 @@ footer p{max-width:860px;margin:0 0 10px}
     <p class="sub">Selected judgments delivered between 2 and 6 November 2026, each summarised in a single line.</p></div>
     <div class="chips reveal" id="devcats"></div>
     <div class="timeline" id="devs"></div>
-    <p class="srcnote">Summaries are our own. Case details are as reported in <a href="https://www.verdictum.in/weekly-summary/weekly-overview-supreme-court-judgments-november-2-november-6-2026-1625472">Verdictum's weekly overview</a>. Read the full judgment on <a href="https://www.sci.gov.in">sci.gov.in</a> before relying on it.</p>
+    <p class="srcnote">Summaries are our own. Case details are as reported in <a href="https://www.verdictum.in/weekly-summary/weekly-overview-supreme-court-judgments-november-2-november-6-2026-1625472">Verdictum’s weekly overview</a>. Read the full judgment on <a href="https://www.sci.gov.in">sci.gov.in</a> before relying on it.</p>
   </div>
 </section>
 
@@ -576,7 +576,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const strip=h=>h.replace(/<[^>]+>/g,' ');
 
 /* ticker */
-(function(){const items=[{t:'Supreme Court awards ₹30 lakh for seven years\' detention after acquittal',k:'Article 21'},{t:'DPDP Consent Manager framework goes live (13 Nov)',k:'Data privacy'},...DEVS.slice(0,6).map(d=>({t:d.t,k:d.c}))];
+(function(){const items=[{t:'Supreme Court awards ₹30 lakh for seven years’ detention after acquittal',k:'Article 21'},{t:'DPDP Consent Manager framework goes live (13 Nov)',k:'Data privacy'},...DEVS.slice(0,6).map(d=>({t:d.t,k:d.c}))];
 const html=items.map(i=>`<span><b>${esc(i.k)}</b>${esc(i.t)}</span>`).join('');$('#ticker').innerHTML=html+html;})();
 
 /* posts */
