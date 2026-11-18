@@ -11,6 +11,7 @@ sys.path.insert(0, HERE)
 import notes_p1, notes_p2, craft_p1, craft_p2  # noqa: E402
 from approach2026 import A as APPROACH  # noqa: E402
 from y2026 import Y2026  # noqa: E402
+from seo import UNIT as SEO_UNIT  # noqa: E402
 
 e = html.escape
 
@@ -51,10 +52,23 @@ table.u-t{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--
 .u-flow{font:600 14px Inter;background:var(--cream);border:1px dashed var(--copper);border-radius:10px;padding:10px 12px}
 .u-ap{margin-top:6px;font-size:14.5px;background:var(--cream);border-radius:10px;padding:8px 10px}.u-ap b{color:var(--teal)}
 .u-method li{margin:6px 0}
+.u-cards{display:grid;gap:12px;margin:18px 0}
+.u-card{display:block;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 18px;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .2s;scroll-margin-top:84px}
+.u-card:hover{border-color:var(--copper-2);transform:translateY(-1px)}
+.u-card h2{font-size:21px;margin:4px 0 6px}.u-card p{margin:0;font-size:14.5px;color:var(--muted)}
+.u-card .go{display:inline-block;margin-top:8px;font:600 13.5px Inter;color:var(--copper)}
+.u-pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:26px 0}
+.u-pn a{display:block;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-decoration:none}
+.u-pn a small{display:block;font:700 11px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--copper)}
+.u-pn a b{font:600 16px Fraunces,Georgia,serif;color:var(--teal)}.u-pn .nx{text-align:right;grid-column:2}
+.u-idx{columns:2 260px;column-gap:28px;padding-left:20px;margin:10px 0 0}.u-idx li{margin:4px 0;font-size:15px;break-inside:avoid}
+.u-sub{font:700 13px Inter;color:var(--teal);margin:18px 0 4px}
+.u-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:14px;border:1px solid var(--line)}
+@media(max-width:600px){.u-unit{padding:18px 16px}.u-q li{padding-left:0}.u-q li .y{position:static;display:inline-block;width:auto;margin-right:6px}.u-pn{grid-template-columns:1fr}.u-pn .nx{grid-column:1;text-align:left}}
 </style>"""
 
 FIND_JS = """<script>(function(){var f=document.getElementById('ufind');if(!f)return;f.addEventListener('input',function(){var q=f.value.toLowerCase().trim();
-document.querySelectorAll('.u-unit').forEach(function(s){s.hidden=q&&s.textContent.toLowerCase().indexOf(q)<0;});});})();</script>"""
+document.querySelectorAll('.u-card,.u-unit').forEach(function(s){s.hidden=q&&s.getAttribute('data-k').toLowerCase().indexOf(q)<0;});});})();</script>"""
 
 
 def load():
@@ -95,7 +109,7 @@ def qlist(qs):
     return "".join(h)
 
 
-def unit_html(u):
+def unit_html(u, standalone=False):
     years = sorted({q["y"] for q in u["qs"]})
     stat = (f'Asked <b>{len(u["qs"])}</b> time{"s" if len(u["qs"]) != 1 else ""} · '
             f'{years[0]}–{years[-1]}' if years else "No question asked since 2013")
@@ -104,7 +118,7 @@ def unit_html(u):
     n = u["note"] or {}
     c = u.get("craft") or {}
     parts = [f'<section class="u-unit" id="u{u["n"]}"><span class="u-stat">Syllabus unit {u["n"]} · {stat}</span>',
-             f'<h2>{e(u["title"])}</h2>']
+             f'<h2>{"Syllabus: " if standalone else ""}{e(u["title"])}</h2>']
     if c.get("decode"):
         parts.append(f'<div class="u-decode"><b>Decode the demand.</b> {e(c["decode"])}</div>')
     if c.get("intro"):
@@ -126,9 +140,32 @@ def unit_html(u):
     if c.get("close"):
         parts.append(f'<h3>Close with</h3><p class="u-open">{e(c["close"])}</p>')
     if u["qs"]:
-        parts.append(f'<details class="u-q"{" open" if any(q.get("new") for q in u["qs"]) else ""}><summary>Previous-year questions ({len(u["qs"])})</summary>{qlist(u["qs"])}</details>')
+        op = " open" if standalone or any(q.get("new") for q in u["qs"]) else ""
+        parts.append(f'<details class="u-q" id="pyq"{op}><summary>Previous-year questions ({len(u["qs"])})</summary>{qlist(u["qs"])}</details>')
     parts.append("</section>")
     return "".join(parts)
+
+
+def crumbs(items):
+    """items: list of (name, path or None). Returns (html, BreadcrumbList dict)."""
+    h = ['<nav class="crumbs" aria-label="Breadcrumb">']
+    for i, (n, p) in enumerate(items):
+        if i:
+            h.append('<span aria-hidden="true">/</span>')
+        h.append(f'<a href="{p}">{e(n)}</a>' if p else f'<span>{e(n)}</span>')
+    h.append("</nav>")
+    return "".join(h)
+
+
+def crumbs_ld(SITE, items):
+    return {"@context": "https://schema.org", "@type": "BreadcrumbList",
+            "itemListElement": [{"@type": "ListItem", "position": i + 1, "name": n, "item": f"{SITE}{p}"}
+                                for i, (n, p) in enumerate(items)]}
+
+
+def years_of(qs):
+    ys = sorted({q["y"] for q in qs})
+    return (ys[0], ys[-1]) if ys else (None, None)
 
 
 def build(page, write, SITE, NAME, ORG, TODAY):
@@ -136,34 +173,94 @@ def build(page, write, SITE, NAME, ORG, TODAY):
     paths = []
     all_units = []
     for s in subs:
-        n_q = sum(len(u["qs"]) for u in s["units"]) + len(s["misc"])
-        s["n_q"] = n_q
-        toc = '<nav class="u-toc">' + "".join(f'<a href="#u{u["n"]}">{u["n"]}. {e(u["title"][:38])}{"…" if len(u["title"]) > 38 else ""}</a>' for u in s["units"]) + "</nav>"
-        units = "".join(unit_html(u) for u in s["units"])
+        s["n_q"] = sum(len(u["qs"]) for u in s["units"]) + len(s["misc"])
+        for u in s["units"]:
+            slug, label = SEO_UNIT[(s["code"], u["n"])]
+            u["slug"], u["label"] = slug, label
+            u["path"] = f"/upsc-law/{s['slug']}/{slug}/"
+
+    for s in subs:
+        spath = f"/upsc-law/{s['slug']}/"
+        base = [("Home", "/"), ("UPSC Law Optional", "/upsc-law/"), (s["title"], spath)]
+        # ---- unit pages ----
+        for i, u in enumerate(s["units"]):
+            y0, y1 = years_of(u["qs"])
+            nq = len(u["qs"])
+            items = base + [(u["label"], u["path"])]
+            prev_u = s["units"][i - 1] if i else None
+            next_u = s["units"][i + 1] if i + 1 < len(s["units"]) else None
+            pn = '<nav class="u-pn" aria-label="More units">'
+            if prev_u:
+                pn += f'<a href="{prev_u["path"]}"><small>&larr; Unit {prev_u["n"]}</small><b>{e(prev_u["label"])}</b></a>'
+            if next_u:
+                pn += f'<a class="nx" href="{next_u["path"]}"><small>Unit {next_u["n"]} &rarr;</small><b>{e(next_u["label"])}</b></a>'
+            pn += "</nav>"
+            others = "".join(f'<li><a href="{x["path"]}">{x["n"]}. {e(x["label"])}</a></li>' for x in s["units"] if x is not u)
+            qline = (f"{nq} previous-year question{'s' if nq != 1 else ''} ({y0}–{y1})" if nq and y0 != y1
+                     else f"{nq} previous-year question ({y0})" if nq else "the questions likely to be asked")
+            body = (CSS + crumbs(items)
+                    + f'<div class="u-hero"><span class="pill">UPSC Law Optional · Paper {s["paper"]} · Unit {u["n"]}</span>'
+                    f'<h1>{e(u["label"])}</h1>'
+                    f'<p class="dek">{e(s["title"])} for the UPSC Civil Services (Main) Law optional: how to decode the question, an answer frame, key provisions, leading cases and {qline}.</p>'
+                    f'<p class="meta"><a href="{spath}">All {len(s["units"])} units of {e(s["title"])}</a>{" · <a href=\"#pyq\">Jump to the questions</a>" if nq else ""}</p></div>'
+                    + unit_html(u, standalone=True) + pn
+                    + f'<h2 style="font-size:22px;margin-top:30px">Other units in {e(s["title"])}</h2><ol class="u-idx" style="list-style:none;padding-left:0">{others}</ol>'
+                    + '<p class="u-note">Notes are original summaries prepared from the Constitution, statutes, treaties and judgments; check the full text of a judgment before citing it. IPC sections are given with their BNS, 2023 equivalents. General information for exam preparation, not legal advice.</p>')
+            title = f"{u['label']}: UPSC Law Optional notes, cases & PYQs"
+            desc = (f"{u['label']} for UPSC Law Optional Paper {s['paper']}: answer frame, key provisions, leading cases"
+                    + (f" and {nq} PYQs from {y0} to {y1}." if nq and y0 != y1 else f" and the {y0} PYQ." if nq else "."))
+            ld = [{"@context": "https://schema.org", "@type": "LearningResource", "name": title, "description": desc,
+                   "url": f"{SITE}{u['path']}", "inLanguage": "en-IN", "educationalLevel": "Civil Services (Main) Examination",
+                   "learningResourceType": "Study notes and previous-year questions", "teaches": u["title"],
+                   "isPartOf": {"@type": "CollectionPage", "name": f"UPSC Law Optional: {s['title']}", "url": f"{SITE}{spath}"},
+                   "isAccessibleForFree": True, "dateModified": TODAY, "publisher": ORG, "author": ORG},
+                  crumbs_ld(SITE, items)]
+            write(u["path"].strip("/") + "/index.html", page(title, desc, u["path"], body, ld, active="upsc"))
+            paths.append(u["path"])
+            all_units.append((nq, s, u))
+
+        # ---- subject overview page ----
+        cards = []
+        for u in s["units"]:
+            n = u["note"] or {}
+            c = u.get("craft") or {}
+            nq = len(u["qs"])
+            y0, y1 = years_of(u["qs"])
+            stat = f"Asked {nq} time{'s' if nq != 1 else ''}" + (f" · {y0}–{y1}" if nq and y0 != y1 else f" · {y0}" if nq else "") if nq else "Not asked since 2013"
+            gist = c.get("decode") or n.get("core") or ""
+            gist = gist if len(gist) <= 210 else gist[:gist.rfind(" ", 0, 205)] + "…"
+            cs = ", ".join(x[0] for x in (n.get("cases") or [])[:3])
+            key = " ".join([u["title"], u["label"], n.get("core", ""), " ".join(n.get("law", [])), " ".join(x[0] for x in n.get("cases", [])), " ".join(q["t"] for q in u["qs"])])
+            cards.append(f'<a class="u-card" id="u{u["n"]}" href="{u["path"]}" data-k="{e(key)}"><span class="u-stat">Unit {u["n"]} · {stat}</span>'
+                         f'<h2>{e(u["label"])}</h2><p>{e(gist)}</p>'
+                         + (f'<p style="margin-top:6px"><b style="color:var(--teal)">Cases:</b> <i>{e(cs)}</i></p>' if cs else "")
+                         + '<span class="go">Notes, answer frame and questions &rarr;</span></a>')
         misc = ""
         if s["misc"]:
-            misc = f'<section class="u-unit" id="misc"><h2>Questions spanning several units</h2><details class="u-q" open><summary>Previous-year questions ({len(s["misc"])})</summary>{qlist([dict(q, new=False) for q in s["misc"]])}</details></section>'
-        body = (CSS + f'<div class="u-hero"><span class="pill">UPSC CSE Law Optional · Paper {s["paper"]}</span>'
-                f'<h1>{e(s["title"])}</h1><p class="dek">Each unit, in syllabus order, shows how to decode the question, frame the answer, which provisions and cases to cite, an interdisciplinary edge and a closing line, followed by every previous-year question from 2013 to 2026 ({n_q} questions).</p>'
-                f'<p class="meta"><a href="/upsc-law/">UPSC Law Optional desk</a> · New 2026 questions are marked in copper.</p></div>'
-                f'<input id="ufind" class="u-find" placeholder="Filter units: try a case, article or section, e.g. Art. 356, Bolam, s. 74" aria-label="Filter units">'
-                f'{toc}{units}{misc}'
-                f'<p class="u-note">Notes are original summaries prepared from the Constitution, statutes, treaties and judgments; check the full text of a judgment before citing it. IPC sections are given with their BNS, 2023 equivalents. General information for exam preparation, not legal advice.</p>'
+            mk = " ".join(q["t"] for q in s["misc"])
+            misc = (f'<section class="u-unit" id="misc" data-k="{e(mk)}"><h2>Questions spanning several units</h2>'
+                    f'<details class="u-q" open><summary>Previous-year questions ({len(s["misc"])})</summary>{qlist([dict(q, new=False) for q in s["misc"]])}</details></section>')
+        body = (CSS + crumbs(base)
+                + f'<div class="u-hero"><span class="pill">UPSC CSE Law Optional · Paper {s["paper"]}</span>'
+                f'<h1>{e(s["title"])}: UPSC Law Optional notes and PYQs</h1><p class="dek">All {len(s["units"])} syllabus units of {e(s["title"])}, in syllabus order. Each unit page shows how to decode the question, frame the answer, which provisions and cases to cite, and every previous-year question from 2013 to 2026 ({s["n_q"]} questions in all).</p>'
+                f'<p class="meta"><a href="/upsc-law/">UPSC Law Optional desk</a> · Paper {s["paper"]}</p></div>'
+                f'<input id="ufind" class="u-find" placeholder="Filter by case, article or section" aria-label="Filter units">'
+                f'<div class="u-cards">{"".join(cards)}</div>{misc}'
+                '<p class="u-note">Notes are original summaries prepared from primary sources. General information for exam preparation, not legal advice.</p>'
                 + FIND_JS)
-        path = f"/upsc-law/{s['slug']}/"
-        title = f"UPSC Law Optional: {s['title']} notes, cases and PYQs 2013–2026 | {NAME}"
-        desc = f"{s['title']} for UPSC CSE Law Optional Paper {s['paper']}: syllabus-wise notes, key provisions, leading cases and {n_q} previous-year questions (2013–2026)."
-        ld = {"@context": "https://schema.org", "@type": "LearningResource", "name": f"UPSC Law Optional: {s['title']}",
-              "description": desc, "url": f"{SITE}{path}", "inLanguage": "en-IN", "educationalLevel": "Civil Services (Main) Examination",
-              "learningResourceType": "Study notes and previous-year questions", "isAccessibleForFree": True,
-              "dateModified": TODAY, "publisher": ORG, "author": ORG}
-        write(f"upsc-law/{s['slug']}/index.html", page(title, desc, path, body, ld))
-        paths.append(path)
-        for u in s["units"]:
-            all_units.append((len(u["qs"]), s, u))
+        title = f"{s['title']}: UPSC Law Optional notes, cases & PYQs (2013–2026)"
+        desc = f"{s['title']} for UPSC Law Optional Paper {s['paper']}: {len(s['units'])} syllabus units with notes, answer frames, leading cases and {s['n_q']} previous-year questions."
+        ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": f"UPSC Law Optional: {s['title']}",
+               "description": desc, "url": f"{SITE}{spath}", "inLanguage": "en-IN", "isAccessibleForFree": True,
+               "dateModified": TODAY, "publisher": ORG,
+               "hasPart": [{"@type": "LearningResource", "name": u["label"], "url": f"{SITE}{u['path']}"} for u in s["units"]]},
+              crumbs_ld(SITE, base)]
+        write(f"upsc-law/{s['slug']}/index.html", page(title, desc, spath, body, ld, active="upsc"))
+        paths.insert(len(paths) - len(s["units"]), spath)
 
-    # Hub
+    # ---- hub ----
     total = sum(s["n_q"] for s in subs)
+    n_units = sum(len(s["units"]) for s in subs)
     cards = []
     for paper in ("I", "II"):
         cards.append(f'<p class="u-paper">Paper {paper}</p><div class="u-grid">')
@@ -171,13 +268,17 @@ def build(page, write, SITE, NAME, ORG, TODAY):
             cards.append(f'<a href="/upsc-law/{s["slug"]}/"><b>{e(s["title"])}</b><span>{len(s["units"])} units · {s["n_q"]} questions</span></a>')
         cards.append("</div>")
     top = sorted(all_units, key=lambda x: -x[0])[:12]
-    toprows = "".join(f'<tr><td>{c}</td><td><a href="/upsc-law/{s["slug"]}/#u{u["n"]}">{e(u["title"])}</a></td><td>{e(s["short"])}</td></tr>' for c, s, u in top)
-    subj_by_code = {s["code"]: s for s in subs}
+    toprows = "".join(f'<tr><td>{c}</td><td><a href="{u["path"]}">{e(u["label"])}</a></td><td>{e(s["short"])}</td></tr>' for c, s, u in top)
+    by_code = {s["code"]: s for s in subs}
+    unit_by = {(s["code"], u["n"]): u for s in subs for u in s["units"]}
     rows26 = "".join(
-        f'<tr><td>{e(qid)}</td><td>{e(t[:150])}{"…" if len(t) > 150 else ""}</td><td><a href="/upsc-law/{subj_by_code[c]["slug"]}/#u{un}">{e(subj_by_code[c]["short"])}, unit {un}</a></td></tr>'
+        f'<tr><td>{e(qid)}</td><td>{e(t[:150])}{"…" if len(t) > 150 else ""}</td><td><a href="{unit_by[(c, un)]["path"]}">{e(unit_by[(c, un)]["label"])}</a></td></tr>'
         for c, un, sub, qid, marks, t in Y2026)
-    body = (CSS + f'<div class="u-hero"><span class="pill">Student desk</span><h1>UPSC Law Optional desk</h1>'
-            f'<p class="dek">Both papers of the Civil Services (Main) Law optional, arranged unit by unit as in the official syllabus, with original notes, key provisions, leading cases and {total} previous-year questions from 2013 to 2026.</p></div>'
+    idx = "".join(f'<p class="u-sub">Paper {s["paper"]} · <a href="/upsc-law/{s["slug"]}/">{e(s["title"])}</a></p><ol class="u-idx">'
+                  + "".join(f'<li><a href="{u["path"]}">{e(u["label"])}</a></li>' for u in s["units"]) + "</ol>" for s in subs)
+    hub_items = [("Home", "/"), ("UPSC Law Optional", "/upsc-law/")]
+    body = (CSS + crumbs(hub_items) + f'<div class="u-hero"><span class="pill">Free · UPSC CSE Main</span><h1>UPSC Law Optional: notes, cases and PYQs</h1>'
+            f'<p class="dek">Both papers of the Civil Services (Main) Law optional, unit by unit as in the official syllabus: {n_units} unit pages with original notes, answer frames, leading cases and {total} previous-year questions from 2013 to 2026. Free, with no sign-up.</p></div>'
             + "".join(cards)
             + '<h2>The answer method behind every unit</h2><p>High-scoring Law optional answers share a pattern: they answer the exact question, build on sections and the ratio of cases, add a layer from outside the bare law, and end by looking forward. Each unit on this desk is written to that pattern.</p>'
             + '<ol class="u-method">'
@@ -190,20 +291,27 @@ def build(page, write, SITE, NAME, ORG, TODAY):
             + '<li><b>Show a critical lens.</b> One honest limitation or counter-view shows judgement.</li>'
             + '<li><b>Draw when it helps.</b> A flowchart, timeline, table or zone diagram in a 15- or 20-mark answer saves words.</li>'
             + '<li><b>Close forward.</b> End with a way forward or a constitutional value, not a summary.</li></ol>'
-            + '<p>Every unit page follows this order: decode the demand, an opening line, an answer frame, the concept, provisions and cases, the interdisciplinary edge, a diagram where useful, a critical lens and a closing line. Each 2026 question also carries a note on how to approach it.</p>'
-            + f'<h2>Most-asked units, 2013–2026</h2><table class="u-t"><tr><th>Qs</th><th>Unit</th><th>Subject</th></tr>{toprows}</table>'
-            + f'<h2>The 2026 papers, mapped to the syllabus</h2><p class="u-note">Every question from the 2026 Main examination (Law Paper I and Paper II), linked to the unit that covers it.</p><table class="u-t"><tr><th>Q</th><th>Question</th><th>Unit</th></tr>{rows26}</table>'
-            + '<h2>Sources and method</h2><p>Questions are taken from the official UPSC question papers. Notes are written by Doctrines &amp; Laws from primary sources: the Constitution of India, Central Acts on India Code, treaties and the judgments themselves. For depth, pair them with standard texts such as M.P. Jain (Indian Constitutional Law), Malcolm Shaw (International Law), Ratanlal &amp; Dhirajlal (Law of Crimes and Law of Torts) and Pollock &amp; Mulla (Indian Contract Act). We do not reproduce coaching notes or toppers\' copies.</p>'
+            + f'<h2>Most-asked units, 2013–2026</h2><div class="u-table-wrap"><table class="u-t"><tr><th>Qs</th><th>Unit</th><th>Subject</th></tr>{toprows}</table></div>'
+            + f'<h2>The 2026 papers, mapped to the syllabus</h2><p class="u-note">Every question from the 2026 Main examination (Law Paper I and Paper II), linked to the unit that covers it. Each carries a note on how to approach it on its unit page.</p><details class="u-q"><summary>Show all {len(Y2026)} questions of 2026</summary><div class="u-table-wrap" style="margin-top:10px"><table class="u-t"><tr><th>Q</th><th>Question</th><th>Unit</th></tr>{rows26}</table></div></details>'
+            + f'<h2>All {n_units} units</h2>{idx}'
+            + '<h2>Sources and method</h2><p>Questions are taken from the official UPSC question papers. Notes are written by Doctrines &amp; Laws from primary sources: the Constitution of India, Central Acts on India Code, treaties and the judgments themselves. For depth, pair them with standard texts such as M.P. Jain (Indian Constitutional Law), Malcolm Shaw (International Law), Ratanlal &amp; Dhirajlal (Law of Crimes and Law of Torts) and Pollock &amp; Mulla (Indian Contract Act).</p>'
             + '<p class="u-note">General information for exam preparation, not legal advice. Spotted an error? Write to doctrinesandlaws@gmail.com.</p>')
-    hub_ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": f"UPSC Law Optional desk | {NAME}",
-              "url": f"{SITE}/upsc-law/", "description": "Syllabus-wise UPSC CSE Law Optional notes, cases and previous-year questions.", "publisher": ORG}
-    write("upsc-law/index.html", page(f"UPSC Law Optional: syllabus-wise notes, cases and PYQs (2013–2026) | {NAME}",
-                                      f"Free UPSC CSE Law Optional desk: both papers unit by unit, with original notes, leading cases and {total} previous-year questions from 2013 to 2026.",
-                                      "/upsc-law/", body, hub_ld, "website"))
+    hub_ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": "UPSC Law Optional: notes, cases and PYQs",
+               "url": f"{SITE}/upsc-law/", "inLanguage": "en-IN", "isAccessibleForFree": True,
+               "description": "Syllabus-wise UPSC CSE Law Optional notes, cases and previous-year questions.", "publisher": ORG,
+               "hasPart": [{"@type": "CollectionPage", "name": s["title"], "url": f"{SITE}/upsc-law/{s['slug']}/"} for s in subs]},
+              crumbs_ld(SITE, hub_items)]
+    write("upsc-law/index.html", page("UPSC Law Optional: free notes, cases and PYQs 2013–2026 (both papers)",
+                                      f"Free UPSC CSE Law Optional notes for Paper I and II: {n_units} syllabus units with answer frames, leading cases and {total} previous-year questions from 2013 to 2026.",
+                                      "/upsc-law/", body, hub_ld, "website", active="upsc"))
     paths.insert(0, "/upsc-law/")
 
-    panel = (f'<p class="srcnote" style="margin-top:0">Both papers of the UPSC Civil Services (Main) Law optional, unit by unit as in the syllabus: original notes, key provisions, leading cases and {total} previous-year questions (2013–2026).</p>'
+    stats = {"total": total, "units": n_units}
+    panel = (f'<p class="srcnote" style="margin-top:0">Both papers of the UPSC Civil Services (Main) Law optional, unit by unit as in the syllabus: original notes, answer frames, leading cases and {total} previous-year questions (2013–2026).</p>'
              '<div class="res" style="margin-top:14px">'
              + "".join(f'<a href="/upsc-law/{s["slug"]}/"><b>{e(s["short"])}</b><span>Paper {s["paper"]} · {len(s["units"])} units · {s["n_q"]} questions</span></a>' for s in subs)
              + '</div><p style="margin-top:14px"><a href="/upsc-law/">Open the UPSC Law Optional desk &rarr;</a></p>')
-    return paths, panel
+    search = [[u["label"], f"{s['title']} · Unit {u['n']}", " ".join((u["note"] or {}).get("law", [])) + " " + " ".join(c[0] for c in (u["note"] or {}).get("cases", [])[:4]), u["path"]] for s in subs for u in s["units"]]
+    feature = {"search": search, "subs": [(s["slug"], s["title"], s["paper"], len(s["units"]), s["n_q"]) for s in subs],
+               "top": [(u["label"], u["path"], c) for c, s, u in top[:6]], **stats}
+    return paths, panel, feature
