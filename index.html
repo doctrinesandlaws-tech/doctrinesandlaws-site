@@ -352,11 +352,12 @@ footer p{max-width:860px;margin:0 0 10px}
 <section class="alt" id="desk">
   <div class="wrap">
     <div class="reveal"><div class="kicker">Student desk</div><h2>Revise faster, <em>remember longer.</em></h2>
-    <p class="sub">Flashcards of landmark cases, an IPC-to-BNS section finder, and a searchable glossary of Latin maxims.</p></div>
+    <p class="sub">Flashcards of landmark cases, an IPC-to-BNS section finder, a glossary of Latin maxims, and a UPSC Law Optional desk.</p></div>
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" aria-selected="true" data-p="p1">Landmark cases</button>
       <button class="tab" role="tab" aria-selected="false" data-p="p2">Old law &rarr; new law</button>
       <button class="tab" role="tab" aria-selected="false" data-p="p3">Latin maxims</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="p4">UPSC Law Optional</button>
     </div>
     <div class="panel" id="p1"><div class="cards" id="flash"></div></div>
     <div class="panel" id="p2" hidden>
@@ -370,6 +371,7 @@ footer p{max-width:860px;margin:0 0 10px}
       <input id="glq" placeholder="Search maxims, e.g. natural justice, precedent" aria-label="Search maxims">
       <div class="list" id="gl"></div>
     </div>
+    <div class="panel" id="p4" hidden><!--UPSC:START--><p class="srcnote" style="margin-top:0">Both papers of the UPSC Civil Services (Main) Law optional, unit by unit as in the syllabus: original notes, key provisions, leading cases and 769 previous-year questions (2013–2026).</p><div class="res" style="margin-top:14px"><a href="/upsc-law/constitutional-administrative-law/"><b>Constitutional &amp; Administrative</b><span>Paper I · 16 units · 194 questions</span></a><a href="/upsc-law/international-law/"><b>International Law</b><span>Paper I · 15 units · 188 questions</span></a><a href="/upsc-law/law-of-crimes/"><b>Crimes</b><span>Paper II · 12 units · 108 questions</span></a><a href="/upsc-law/law-of-torts/"><b>Torts &amp; Consumer Protection</b><span>Paper II · 13 units · 86 questions</span></a><a href="/upsc-law/contracts-mercantile-law/"><b>Contracts &amp; Mercantile</b><span>Paper II · 13 units · 113 questions</span></a><a href="/upsc-law/contemporary-legal-developments/"><b>Contemporary Developments</b><span>Paper II · 8 units · 80 questions</span></a></div><p style="margin-top:14px"><a href="/upsc-law/">Open the UPSC Law Optional desk &rarr;</a></p><!--UPSC:END--></div>
     <div class="motd reveal"><div><small>Maxim of the day</small><div class="q" id="motdq"></div><small id="motdm"></small></div></div>
   </div>
 </section>
@@ -630,7 +632,7 @@ $('#maprows').innerHTML=rows.length?rows.map(m=>`<div class="maprow"><span class
 $('#convq').addEventListener('input',e=>renderMap(e.target.value));
 function renderGl(q=''){q=q.toLowerCase();$('#gl').innerHTML=MAXIMS.filter(m=>(m[0]+' '+m[1]).toLowerCase().includes(q)).map(m=>`<div class="m"><i>${m[0]}</i><p>${m[1]}</p></div>`).join('');}
 $('#glq').addEventListener('input',e=>renderGl(e.target.value));
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));['p1','p2','p3'].forEach(p=>$('#'+p).hidden=p!==t.dataset.p);}));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t));['p1','p2','p3','p4'].forEach(p=>$('#'+p).hidden=p!==t.dataset.p);}));
 (function(){const d=new Date(),i=(d.getFullYear()*372+d.getMonth()*31+d.getDate())%MAXIMS.length;$('#motdq').textContent=MAXIMS[i][0];$('#motdm').textContent=MAXIMS[i][1];})();
 
 /* resources */

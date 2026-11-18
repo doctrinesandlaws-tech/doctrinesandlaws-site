@@ -104,6 +104,7 @@ a{color:var(--teal)}.wrap{max-width:760px;margin:0 auto;padding:0 22px}
 header{border-bottom:1px solid var(--line);background:rgba(246,241,231,.9)}header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1040px}
 .brand{display:flex;gap:10px;align-items:center;text-decoration:none;font:700 20px Fraunces,Georgia,serif;color:var(--teal)}.brand img{width:36px;height:36px;border-radius:50%}
 .brand i{color:var(--copper);font-style:normal}nav a{margin-left:18px;font-size:14px;text-decoration:none;color:var(--ink)}
+@media(max-width:700px){header .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:6px}header nav{width:100%;overflow-x:auto;white-space:nowrap;padding:6px 0}header nav a{margin:0 16px 0 0}}
 h1,h2{font-family:Fraunces,Georgia,serif;color:var(--teal);line-height:1.15}h1{font-size:clamp(32px,5vw,46px);margin:14px 0 10px}
 .pill{display:inline-block;font:700 11px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--copper);background:#F3E3D5;padding:5px 10px;border-radius:999px}
 .dek{color:var(--muted);font-size:19px;margin:0 0 24px}article{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 30px;margin:28px 0}
@@ -148,7 +149,7 @@ def page(title, desc, path, body, jsonld, og_type="article"):
 <body>
 {GATE}
 <header><div class="wrap"><a class="brand" href="/"><img src="/assets/crest.jpg" alt="">Doctrines <i>&amp;</i> Laws</a>
-<nav><a href="/explainers/">Explainers</a><a href="/#court">This week in court</a><a href="/#rights">Know your rights</a></nav></div></header>
+<nav><a href="/explainers/">Explainers</a><a href="/#court">This week in court</a><a href="/#rights">Know your rights</a><a href="/upsc-law/">UPSC Law</a></nav></div></header>
 <main class="wrap">{body}</main>
 <footer><div class="wrap">All content is general legal information, provided for education and awareness. It is not legal advice and does not create a lawyer–client relationship. &copy; {datetime.date.today().year} {e(FIRM)}, New Delhi.</div></footer>
 </body>
@@ -184,6 +185,12 @@ write("explainers/index.html", page(f"Legal explainers: Indian law in plain lang
       "/explainers/", f'<h1>Explainers</h1><p class="dek">Each explainer takes a single judgment or statute and answers the question a non-lawyer would actually ask.</p><div class="list">{"".join(items)}</div>',
       list_ld, "website"))
 
+# UPSC Law Optional desk (source: _upsc/)
+sys.path.insert(0, os.path.join(ROOT, "_upsc"))
+import gen as upsc_gen  # noqa: E402
+upsc_paths, upsc_panel = upsc_gen.build(page, write, SITE, NAME, ORG, TODAY)
+urls += [(f"{SITE}{p}", TODAY) for p in upsc_paths]
+
 write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
       + "".join(f"  <url><loc>{u}</loc><lastmod>{d}</lastmod></url>\n" for u, d in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
@@ -205,6 +212,7 @@ if "<!--SEO:START-->" in src:
     src = re.sub(r"<!--SEO:START-->.*?<!--SEO:END-->", lambda m: seo, src, flags=re.S)
 else:
     src = src.replace('<link rel="icon"', seo + '\n<link rel="icon"', 1)
+src = re.sub(r"<!--UPSC:START-->.*?<!--UPSC:END-->", lambda m: "<!--UPSC:START-->" + upsc_panel + "<!--UPSC:END-->", src, flags=re.S)
 src = src.replace('<html lang="en">', '<html lang="en-IN">', 1)
 write("index.html", src)
 print(f"Built {len(posts)} explainer pages, sitemap with {len(urls)} URLs.")

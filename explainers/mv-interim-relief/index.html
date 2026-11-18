@@ -20,6 +20,7 @@ a{color:var(--teal)}.wrap{max-width:760px;margin:0 auto;padding:0 22px}
 header{border-bottom:1px solid var(--line);background:rgba(246,241,231,.9)}header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1040px}
 .brand{display:flex;gap:10px;align-items:center;text-decoration:none;font:700 20px Fraunces,Georgia,serif;color:var(--teal)}.brand img{width:36px;height:36px;border-radius:50%}
 .brand i{color:var(--copper);font-style:normal}nav a{margin-left:18px;font-size:14px;text-decoration:none;color:var(--ink)}
+@media(max-width:700px){header .wrap{flex-wrap:wrap;height:auto;padding-top:10px;padding-bottom:6px}header nav{width:100%;overflow-x:auto;white-space:nowrap;padding:6px 0}header nav a{margin:0 16px 0 0}}
 h1,h2{font-family:Fraunces,Georgia,serif;color:var(--teal);line-height:1.15}h1{font-size:clamp(32px,5vw,46px);margin:14px 0 10px}
 .pill{display:inline-block;font:700 11px Inter;letter-spacing:.12em;text-transform:uppercase;color:var(--copper);background:#F3E3D5;padding:5px 10px;border-radius:999px}
 .dek{color:var(--muted);font-size:19px;margin:0 0 24px}article{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 30px;margin:28px 0}
@@ -40,7 +41,7 @@ footer{border-top:1px solid var(--line);margin-top:40px;padding:24px 0 40px;font
 <script>(function(){var g=document.getElementById('gate');try{if(sessionStorage.getItem('dl-ok')==='1')g.hidden=true}catch(e){}
 document.getElementById('agree').onclick=function(){try{sessionStorage.setItem('dl-ok','1')}catch(e){}g.hidden=true};})();</script>
 <header><div class="wrap"><a class="brand" href="/"><img src="/assets/crest.jpg" alt="">Doctrines <i>&amp;</i> Laws</a>
-<nav><a href="/explainers/">Explainers</a><a href="/#court">This week in court</a><a href="/#rights">Know your rights</a></nav></div></header>
+<nav><a href="/explainers/">Explainers</a><a href="/#court">This week in court</a><a href="/#rights">Know your rights</a><a href="/upsc-law/">UPSC Law</a></nav></div></header>
 <main class="wrap"><article><span class="pill">Civil</span>
 <h1>Road accident? Interim relief without proving fault</h1><p class="dek">Section 164A of the Motor Vehicles Act, 1988 provides for quick interim compensation.</p>
 <div><p>Motor accident claims usually require proving negligence before a tribunal, which takes time while medical bills mount. <b>Section 164A</b> of the Motor Vehicles Act, 1988 provides a scheme of interim relief.</p>

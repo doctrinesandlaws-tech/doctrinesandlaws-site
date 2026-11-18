@@ -22,3 +22,9 @@
 
 ## Google Search Console
 - `googledc4f398d4b61f658.html` verifies the site in Search Console (doctrinesandlaws@gmail.com). Never delete or edit it.
+
+## UPSC Law Optional desk (`/upsc-law/`)
+- Source lives in `_upsc/`: `notes_p1.py`, `notes_p2.py` (unit notes: core, provisions, leading cases), `pyq.json` (2013–2025 PYQs by syllabus unit), `y2026.py` (2026 papers). `build.py` calls `_upsc/gen.py`, which writes `/upsc-law/` and the six subject pages and fills the `<!--UPSC:START-->` panel in the Student desk.
+- Keep it one part of the site: a Student-desk tab and a header link on inner pages only. Do not add it to the homepage hero or ticker.
+- Each new UPSC Main paper: add its questions to `_upsc/` (map each to a syllabus unit), rebuild, and check the counts.
+- Deepen one unit a week: verify every case name, year and holding against the judgment; cite IPC sections with BNS equivalents. Never copy coaching notes or toppers' copies.
