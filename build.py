@@ -86,6 +86,8 @@ except Exception as e:  # Pillow missing: keep crest as share image
     print("og.png skipped:", e)
 
 posts = extract_array(src, "POSTS")
+if "const ARCHIVE=[" in src:
+    posts += extract_array(src, "ARCHIVE")
 
 ORG = {"@type": "Organization", "name": FIRM, "url": SITE + "/",
        "logo": SITE + "/assets/crest.jpg",
