@@ -19,3 +19,6 @@
   - the `<!--SEO:START-->` block in `index.html`
 - Never hand-edit the generated files; edit POSTS and rebuild.
 - An explainer's slug is its POSTS `id` without `post-`. Never change a published slug, because its URL is indexed.
+
+## Google Search Console
+- `googledc4f398d4b61f658.html` verifies the site in Search Console (doctrinesandlaws@gmail.com). Never delete or edit it.
