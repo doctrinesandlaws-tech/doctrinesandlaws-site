@@ -41,4 +41,10 @@
 - `favicon.ico`, `site.webmanifest`: search-result icon and app metadata.
 - `feed.xml`: RSS feed of explainers, linked from every page head.
 - `llms.txt`: plain-text map of the site for AI search engines.
+- `404.html`: friendly not-found page (noindex).
 - `<INDEXNOW_KEY>.txt`: IndexNow key file. Never delete or rename it. After a deploy that adds pages, ping IndexNow with the new URLs.
+
+## Security (netlify.toml)
+- HTTPS with HSTS preload, CSP, Permissions-Policy, COOP, nosniff, frame and referrer headers are set in `netlify.toml`. Only Google Fonts is allowed as an outside source; adding any other third-party script, font, image host or iframe needs a CSP update and approval.
+- Build sources and notes (`/_build/`, `/_upsc/`, `build.py`, `AGENTS.md`, `README.md`) are blocked with 404s. Keep any new internal file under those folders or add a block.
+- Never commit secrets. The site has no forms, logins or cookies.

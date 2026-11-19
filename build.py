@@ -230,6 +230,15 @@ write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="htt
       + "".join(f"  <url><loc>{u}</loc><lastmod>{d}</lastmod></url>\n" for u, d in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
 
+# ---- 404 page ----
+write("404.html", page(f"Page not found | {NAME}", "This page does not exist. Try the explainers or the UPSC Law Optional desk.", "/404.html",
+      '<h1>Page not found</h1><p class="dek">This page does not exist or has moved.</p>'
+      '<div class="list"><a href="/"><b>Home</b><span>This week in court, know your rights and more</span></a>'
+      '<a href="/explainers/"><b>Explainers</b><span>Indian law in plain language</span></a>'
+      '<a href="/upsc-law/"><b>UPSC Law Optional</b><span>Study notes and past questions, unit by unit</span></a></div>',
+      [{"@context": "https://schema.org", "@type": "WebPage", "name": "Page not found"}], "website").replace(
+      '<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1))
+
 # ---- discovery files: favicon, manifest, RSS feed, llms.txt, IndexNow key ----
 try:
     from PIL import Image
