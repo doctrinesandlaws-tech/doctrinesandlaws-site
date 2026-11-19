@@ -1,6 +1,7 @@
 # Website agent rules (doctrinesandlaws-site)
 
 - Edit content only in the arrays at the top of `index.html` (POSTS, DEVS, RIGHTS, CASES, MAP, MAXIMS, RES). Change layout or CSS only when asked.
+- Never name other legal-news or legal-database platforms anywhere on the site (no "reports by …", no third-party report citations such as "LiveLaw (SC)"). Use neutral citations (INSC) or "Judgment of <date>", and link only to official sources.
 - Never add: member profiles, testimonials, client lists, case results, fees, consultation buttons, contact forms, political consulting, ads or trackers.
 - Before every push:
   1. Verify facts. Use real neutral citations; never invent one.

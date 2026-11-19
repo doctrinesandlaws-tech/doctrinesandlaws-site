@@ -23,7 +23,9 @@ INDEXNOW_KEY = "bc132384cedc37a04eed05a67be7af63"  # IndexNow (Bing, Yandex, Sez
 HEADLINKS = ('<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/jpeg" sizes="96x96" href="/assets/crest-96.jpg">'
              '<link rel="apple-touch-icon" href="/assets/crest-192.jpg"><link rel="manifest" href="/site.webmanifest">'
              '<meta name="theme-color" content="#F6F1E7">'
-             '<link rel="alternate" type="application/rss+xml" title="Doctrines &amp; Laws: explainers" href="/feed.xml">')
+             '<link rel="alternate" type="application/rss+xml" title="Doctrines &amp; Laws: explainers" href="/feed.xml">'
+             '<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">'
+             '<meta property="og:image:alt" content="Doctrines &amp; Laws: Law, explained."><meta property="og:locale" content="en_IN">')
 MONTHS = {m: i for i, m in enumerate(
     "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(), 1)}
 
@@ -215,7 +217,7 @@ for idx, (p, slug) in enumerate(slugs):
 trail = [("Home", "/"), ("Explainers", "/explainers/")]
 list_ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": f"Explainers | {NAME}",
             "url": f"{SITE}/explainers/", "publisher": ORG, "inLanguage": "en-IN", "isAccessibleForFree": True}, crumb_ld(trail)]
-write("explainers/index.html", page(f"Indian law explained in plain language: free explainers | {NAME}",
+write("explainers/index.html", page(f"Indian Law Explained in Plain Language: Free Explainers | {NAME}",
       "Free plain-language explainers on Indian law: Supreme Court and High Court judgments, BNS, BNSS and other statutes, and your rights, by Doctrines & Laws.",
       "/explainers/", f'{crumb_html(trail)}<h1>Explainers</h1><p class="dek">Each explainer takes a single judgment or statute and answers the question a non-lawyer would actually ask.</p><div class="list">{"".join(items)}</div>',
       list_ld, "website", active="explainers"))
@@ -290,8 +292,8 @@ llms += ["", "## Optional", "", f"- [Sitemap]({SITE}/sitemap.xml)", f"- [RSS fee
 write("llms.txt", "\n".join(llms))
 
 # ---- homepage ----
-HOME_TITLE = "Doctrines & Laws: free Indian law explainers and UPSC Law Optional notes"
-HOME_DESC = ("Free legal education by Doctrines & Laws: plain-language explainers on Indian law, this week's Supreme Court rulings, "
+HOME_TITLE = "Doctrines & Laws | Indian Law, Explained: Free Explainers and UPSC Law Optional Notes"
+HOME_DESC = ("Free legal education by Doctrines & Laws. Plain-language explainers on Indian law, this week's Supreme Court rulings, "
              f"know-your-rights guides and UPSC Law Optional notes with {feat['total']} PYQs.")
 home_ld = [{"@context": "https://schema.org", **ORG},
            {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "alternateName": "Law, explained.",

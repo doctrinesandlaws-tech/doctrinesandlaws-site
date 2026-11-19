@@ -228,7 +228,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
                     + unit_html(u, standalone=True) + pn
                     + f'<h2 style="font-size:22px;margin-top:30px">Other units in {e(s["title"])}</h2><ol class="u-idx" style="list-style:none;padding-left:0">{others}</ol>'
                     + '<p class="u-note">Notes are original summaries prepared from the Constitution, statutes, treaties and judgments; check the full text of a judgment before citing it. IPC sections are given with their BNS, 2023 equivalents. General information for exam preparation, not legal advice.</p>')
-            title = f"{u['label']}: UPSC Law Optional notes, cases & PYQs"
+            title = f"{u['label']}: UPSC Law Optional Notes, Cases & PYQs"
             desc = (f"{u['label']}: UPSC Law Optional Paper {s['paper']} study notes, answer frame, leading cases"
                     + (f" and {nq} PYQs from {y0} to {y1}." if nq and y0 != y1 else f" and the {y0} PYQ." if nq else "."))
             ld = [{"@context": "https://schema.org", "@type": "LearningResource", "name": title, "description": desc,
@@ -270,7 +270,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
                 f'<div class="u-cards">{"".join(cards)}</div>{misc}'
                 '<p class="u-note">Notes are original summaries prepared from primary sources. General information for exam preparation, not legal advice.</p>'
                 + FIND_JS)
-        title = f"{s['title']}: UPSC Law Optional notes, cases & PYQs (2013–2026)"
+        title = f"{s['title']}: UPSC Law Optional Notes, Cases & PYQs (2013–2026)"
         desc = f"{s['title']} for UPSC Law Optional Paper {s['paper']}: {len(s['units'])} syllabus units with notes, answer frames, leading cases and {s['n_q']} previous-year questions."
         ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": f"UPSC Law Optional: {s['title']}",
                "description": desc, "url": f"{SITE}{spath}", "inLanguage": "en-IN", "isAccessibleForFree": True,
@@ -323,7 +323,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
                "description": "Syllabus-wise UPSC CSE Law Optional notes, cases and previous-year questions.", "publisher": ORG,
                "hasPart": [{"@type": "CollectionPage", "name": s["title"], "url": f"{SITE}/upsc-law/{s['slug']}/"} for s in subs]},
               crumbs_ld(SITE, hub_items)]
-    write("upsc-law/index.html", page("UPSC Law Optional: free notes, cases and PYQs 2013–2026 (both papers)",
+    write("upsc-law/index.html", page("UPSC Law Optional: Free Notes, Cases and PYQs 2013–2026 (Both Papers)",
                                       f"Free UPSC CSE Law Optional notes for Paper I and II: {n_units} syllabus units with answer frames, leading cases and {total} previous-year questions from 2013 to 2026.",
                                       "/upsc-law/", body, hub_ld, "website", active="upsc"))
     paths.insert(0, "/upsc-law/")
