@@ -258,7 +258,7 @@ upsc_feature = f"""<!--UPSCFEAT:START--><section class="uf" id="upsc" aria-label
     <div class="uf-head reveal">
       <div><div class="kicker">UPSC CSE &middot; Law Optional</div>
       <h2 id="uf-h">The whole Law optional, <em>unit by unit.</em></h2>
-      <p class="sub">Free notes for both papers in the order of the official syllabus: how to decode each question, an answer frame, provisions, leading cases and every previous-year question since 2013.</p></div>
+      <p class="sub">Free study notes for both papers in the order of the official syllabus, with how to decode each question, an answer frame, leading cases and every previous-year question since 2013.</p></div>
       <div class="uf-stats"><div><b>{feat['units']}</b><span>syllabus units</span></div><div><b>{feat['total']}</b><span>past questions</span></div><div><b>2013&ndash;26</b><span>papers mapped</span></div></div>
     </div>
     <div class="uf-grid reveal">{subj_cards}</div>

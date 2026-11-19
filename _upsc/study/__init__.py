@@ -25,6 +25,7 @@ def _inline(s):
     s = html.escape(s, quote=False)
     s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", s)
     s = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<i>\1</i>", s)
+    s = re.sub(r"(\d+(?:\([0-9A-Za-z]+\))?[–-]\d+(?:\([0-9A-Za-z]+\))?)", r'<span class="nw">\1</span>', s)
     return s
 
 

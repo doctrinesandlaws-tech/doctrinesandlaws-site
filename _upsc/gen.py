@@ -60,6 +60,7 @@ table.u-t{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--
 .u-notes i{color:var(--teal)}
 .u-toc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 18px}.u-toc a{font:500 13px Inter;padding:5px 11px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--teal);background:var(--cream)}
 .u-toc a:hover{border-color:var(--copper-2);color:var(--copper)}
+.nw{white-space:nowrap}
 .u-rev{background:#FBF4EA;border:1px solid #EBD9C2;border-left:4px solid var(--copper);border-radius:12px;padding:12px 16px;margin:16px 0}
 .u-rev p:first-child{margin-top:0}.u-nt td,.u-nt th{font-size:14.5px;vertical-align:top}
 .u-jump{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}.u-jump a{font:600 13.5px Inter;text-decoration:none;padding:7px 14px;border-radius:999px;background:var(--teal);color:#fff}
@@ -255,7 +256,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
             cards.append(f'<a class="u-card" id="u{u["n"]}" href="{u["path"]}" data-k="{e(key)}"><span class="u-stat">Unit {u["n"]} · {stat}</span>'
                          f'<h2>{e(u["label"])}</h2><p>{e(gist)}</p>'
                          + (f'<p style="margin-top:6px"><b style="color:var(--teal)">Cases:</b> <i>{e(cs)}</i></p>' if cs else "")
-                         + '<span class="go">Notes, answer frame and questions &rarr;</span></a>')
+                         + '<span class="go">Study notes, answer frame and questions &rarr;</span></a>')
         misc = ""
         if s["misc"]:
             mk = " ".join(q["t"] for q in s["misc"])
@@ -263,7 +264,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
                     f'<details class="u-q" open><summary>Previous-year questions ({len(s["misc"])})</summary>{qlist([dict(q, new=False) for q in s["misc"]])}</details></section>')
         body = (CSS + crumbs(base)
                 + f'<div class="u-hero"><span class="pill">UPSC CSE Law Optional · Paper {s["paper"]}</span>'
-                f'<h1>{e(s["title"])}: UPSC Law Optional notes and PYQs</h1><p class="dek">All {len(s["units"])} syllabus units of {e(s["title"])}, in syllabus order. Each unit page shows how to decode the question, frame the answer, which provisions and cases to cite, and every previous-year question from 2013 to 2026 ({s["n_q"]} questions in all).</p>'
+                f'<h1>{e(s["title"])}: UPSC Law Optional notes and PYQs</h1><p class="dek">All {len(s["units"])} syllabus units of {e(s["title"])}, in syllabus order. Each unit page has full study notes, then how to decode the question, frame the answer and which provisions and cases to cite, and every previous-year question from 2013 to 2026 ({s["n_q"]} questions in all).</p>'
                 f'<p class="meta"><a href="/upsc-law/">UPSC Law Optional desk</a> · Paper {s["paper"]}</p></div>'
                 f'<input id="ufind" class="u-find" placeholder="Filter by case, article or section" aria-label="Filter units">'
                 f'<div class="u-cards">{"".join(cards)}</div>{misc}'
@@ -299,7 +300,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
                   + "".join(f'<li><a href="{u["path"]}">{e(u["label"])}</a></li>' for u in s["units"]) + "</ol>" for s in subs)
     hub_items = [("Home", "/"), ("UPSC Law Optional", "/upsc-law/")]
     body = (CSS + crumbs(hub_items) + f'<div class="u-hero"><span class="pill">Free · UPSC CSE Main</span><h1>UPSC Law Optional: notes, cases and PYQs</h1>'
-            f'<p class="dek">Both papers of the Civil Services (Main) Law optional, unit by unit as in the official syllabus: {n_units} unit pages with original notes, answer frames, leading cases and {total} previous-year questions from 2013 to 2026. Free, with no sign-up.</p></div>'
+            f'<p class="dek">Both papers of the Civil Services (Main) Law optional, unit by unit as in the official syllabus: {n_units} unit pages with full study notes, answer frames, leading cases and {total} previous-year questions from 2013 to 2026. Free, with no sign-up.</p></div>'
             + "".join(cards)
             + '<h2>The answer method behind every unit</h2><p>High-scoring Law optional answers share a pattern: they answer the exact question, build on sections and the ratio of cases, add a layer from outside the bare law, and end by looking forward. Each unit on this desk is written to that pattern.</p>'
             + '<ol class="u-method">'
@@ -328,7 +329,7 @@ def build(page, write, SITE, NAME, ORG, TODAY):
     paths.insert(0, "/upsc-law/")
 
     stats = {"total": total, "units": n_units}
-    panel = (f'<p class="srcnote" style="margin-top:0">Both papers of the UPSC Civil Services (Main) Law optional, unit by unit as in the syllabus: original notes, answer frames, leading cases and {total} previous-year questions (2013–2026).</p>'
+    panel = (f'<p class="srcnote" style="margin-top:0">Both papers of the UPSC Civil Services (Main) Law optional, unit by unit as in the syllabus: full study notes, answer frames, leading cases and {total} previous-year questions (2013–2026).</p>'
              '<div class="res" style="margin-top:14px">'
              + "".join(f'<a href="/upsc-law/{s["slug"]}/"><b>{e(s["short"])}</b><span>Paper {s["paper"]} · {len(s["units"])} units · {s["n_q"]} questions</span></a>' for s in subs)
              + '</div><p style="margin-top:14px"><a href="/upsc-law/">Open the UPSC Law Optional desk &rarr;</a></p>')
