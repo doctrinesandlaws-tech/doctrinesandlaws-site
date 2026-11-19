@@ -11,6 +11,17 @@
 ## Explainers
 
 - [Seven years in jail after acquittal: what does Article 21 owe you?](https://doctrinesandlaws.netlify.app/explainers/acquittal-compensation/): The Supreme Court awarded ₹30 lakh in public-law compensation and asked Parliament to enact a law on wrongful incarceration.
+- [Lost money to an online fraud? What to do in the first hour](https://doctrinesandlaws.netlify.app/explainers/online-fraud-first-hour/): Call 1930 or report on cybercrime.gov.in at once, then tell your bank. Speed decides whether the money can be frozen before it moves on.
+- [Is there such a thing as a “digital arrest”?](https://doctrinesandlaws.netlify.app/explainers/digital-arrest/): No. Indian law has no procedure for arresting anyone over a video call. How the scam works, and what the Supreme Court has ordered.
+- [When must a social media platform take down a post?](https://doctrinesandlaws.netlify.app/explainers/platform-takedowns/): Section 79 of the IT Act shields platforms only if they act on lawful orders. Since February 2026 the deadline is three hours, not 36.
+- [Your personal data was leaked. What must the company tell you?](https://doctrinesandlaws.netlify.app/explainers/dpdp-data-breach/): Under the DPDP Rules, 2025, a company must tell affected users without delay and report to the Data Protection Board within 72 hours.
+- [Deepfakes and AI-made content: what the 2026 IT Rules require](https://doctrinesandlaws.netlify.app/explainers/deepfake-labelling/): Since 20 February 2026, AI-generated audio, images and video must carry a clear label and embedded provenance data. What platforms and AI tools must do.
+- [Can AI companies train on your work? The ANI v. OpenAI ruling](https://doctrinesandlaws.netlify.app/explainers/ai-training-copyright/): The Delhi High Court refused an interim injunction against ChatGPT, finding training prima facie fair dealing. What it decided and what is still open.
+- [Who can use a celebrity’s face or voice? Personality rights](https://doctrinesandlaws.netlify.app/explainers/personality-rights/): Courts protect a well-known person’s name, image, voice and likeness from commercial misuse, including AI deepfakes, voice clones and chatbots.
+- [UA 7+, 13+, 16+: film certification and piracy law explained](https://doctrinesandlaws.netlify.app/explainers/film-certification/): The 2023 amendment to the Cinematograph Act added age-based ratings, made certificates permanent and made camcording and piracy specific offences.
+- [What the National Sports Governance Act, 2025 changes](https://doctrinesandlaws.netlify.app/explainers/sports-governance-act/): A National Sports Board now recognises federations and a Sports Tribunal hears disputes, with appeals to the Supreme Court.
+- [Is real-money online gaming banned in India?](https://doctrinesandlaws.netlify.app/explainers/online-gaming-ban/): Yes. Since 1 May 2026 the Online Gaming Act bans offering, advertising and processing payments for online money games. Players are not punished.
+- [Hidden charges at checkout? Dark patterns explained](https://doctrinesandlaws.netlify.app/explainers/dark-patterns/): Indian law bans 13 “dark patterns” on apps and websites, from fake countdown timers to items sneaked into your cart. What they are and how to complain.
 - [Can I file an FIR at any police station? Zero FIR explained](https://doctrinesandlaws.netlify.app/explainers/zero-fir/): Yes. Under Section 173 of the BNSS, police must record a cognizable offence wherever it happened and transfer it. How to file, and what to do if refused.
 - [One dashboard for all your data permissions?](https://doctrinesandlaws.netlify.app/explainers/dpdp-consent-manager/): How Consent Managers under the DPDP Act, 2023 and Rule 4 of the DPDP Rules, 2025 are meant to work.
 - [Can a government order rely on case law invented by AI?](https://doctrinesandlaws.netlify.app/explainers/ai-hallucinated-citations/): The Bombay High Court quashed a customs order that cited judgments that do not exist.
@@ -20,6 +31,21 @@
 - [Can a WhatsApp screenshot alone get someone convicted?](https://doctrinesandlaws.netlify.app/explainers/whatsapp-evidence/): Admissibility is one hurdle; proving who wrote the message is another.
 - [Road accident? Interim relief without proving fault](https://doctrinesandlaws.netlify.app/explainers/mv-interim-relief/): Section 164A of the Motor Vehicles Act, 1988 provides for quick interim compensation.
 - [Can the State ban a protest just to manage traffic?](https://doctrinesandlaws.netlify.app/explainers/right-to-protest/): Article 19(1)(b), the public trust doctrine and the proportionality test.
+
+## Explainer topics
+
+- [Cyber law](https://doctrinesandlaws.netlify.app/explainers/topic/cyber-law/): Online fraud, digital arrest scams, hacking and identity theft: what Indian law says and what to do when it happens to you.
+- [Technology](https://doctrinesandlaws.netlify.app/explainers/topic/technology/): How Indian law regulates platforms, apps and the internet: safe harbour, takedowns, blocking orders and your remedies as a user.
+- [AI & law](https://doctrinesandlaws.netlify.app/explainers/topic/ai-and-law/): Deepfakes, AI-generated content, copyright and AI training, and the rules India has made for artificial intelligence.
+- [Data privacy](https://doctrinesandlaws.netlify.app/explainers/topic/data-privacy/): Your rights over personal data under the Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025.
+- [Entertainment & media](https://doctrinesandlaws.netlify.app/explainers/topic/entertainment-and-media/): Film certification, piracy, personality rights, celebrity deepfakes and the law that governs films, music and streaming.
+- [Sports & gaming](https://doctrinesandlaws.netlify.app/explainers/topic/sports-and-gaming/): Sports governance, athletes' rights, sports disputes, e-sports and the ban on real-money online games.
+- [Consumer](https://doctrinesandlaws.netlify.app/explainers/topic/consumer/): Your rights as a buyer online and offline: dark patterns, hidden charges, refunds and how to complain.
+- [Constitutional](https://doctrinesandlaws.netlify.app/explainers/topic/constitutional/): Fundamental rights, the limits of State power and landmark constitutional judgments, explained in plain language.
+- [Criminal](https://doctrinesandlaws.netlify.app/explainers/topic/criminal/): FIRs, arrest, bail and the new criminal laws (BNS, BNSS and BSA), explained for citizens.
+- [Civil](https://doctrinesandlaws.netlify.app/explainers/topic/civil/): Property disputes, accident compensation and everyday civil law questions.
+- [Evidence](https://doctrinesandlaws.netlify.app/explainers/topic/evidence/): How courts treat electronic records, WhatsApp chats and other evidence under the Bharatiya Sakshya Adhiniyam, 2023.
+- [Administrative](https://doctrinesandlaws.netlify.app/explainers/topic/administrative/): How government bodies must act: natural justice, reasoned orders and judicial review.
 
 ## UPSC Law Optional subjects
 

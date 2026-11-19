@@ -49,3 +49,8 @@
 - HTTPS with HSTS preload, CSP, Permissions-Policy, COOP, nosniff, frame and referrer headers are set in `netlify.toml`. Only Google Fonts is allowed as an outside source; adding any other third-party script, font, image host or iframe needs a CSP update and approval.
 - Build sources and notes (`/_build/`, `/_upsc/`, `build.py`, `AGENTS.md`, `README.md`) are blocked with 404s. Keep any new internal file under those folders or add a block.
 - Never commit secrets. The site has no forms, logins or cookies.
+
+## Deploy budget (Netlify free plan: 300 credits a month, hard limit)
+- Every push to `main` is a production deploy and costs 15 credits (20 a month at most, and bandwidth also uses credits). If credits run out, the site goes offline until the next cycle.
+- Batch changes: aim for one deploy a week (the Saturday run). For work-in-progress commits, put `[skip netlify]` in the commit message so Netlify does not deploy; the next normal commit deploys everything.
+- Never push to fix something cosmetic on its own; queue it for the weekly deploy. Urgent legal-accuracy fixes are the exception.

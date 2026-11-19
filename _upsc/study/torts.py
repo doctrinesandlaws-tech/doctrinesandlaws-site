@@ -508,7 +508,7 @@ The **Consumer Protection Act, 2019** (in force July 2020) replaced the 1986 Act
   - State Commission: above ₹50 lakh up to ₹2 crore
   - National Commission: above ₹2 crore
 - **Territorial jurisdiction** includes where the complainant resides or works (s. 34).
-- **Mediation** (Chapter V) and **e-filing** (e-Daakhil portal).
+- **Mediation** (Chapter V) and **e-filing** (e-Daakhil, merged into the e-Jagriti portal from 1 January 2025).
 - **Limitation**: two years from the cause of action (s. 69).
 
 ## Product liability (Chapter VI, ss. 82–87)

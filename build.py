@@ -122,6 +122,11 @@ h1,h2{font-family:Fraunces,Georgia,serif;color:var(--teal);line-height:1.15}h1{f
 .list b{display:block;font:600 21px Fraunces,Georgia,serif;color:var(--teal)}.list span{color:var(--muted);font-size:15px}
 @media(max-width:600px){body{font-size:16.5px}article{padding:20px 18px;border-radius:16px}.dek{font-size:17.5px}}
 .related{margin:8px 0 30px}.related h2{font-size:22px}
+.topics{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 26px}.topics .chip{display:inline-block;border:1px solid var(--line);background:var(--paper);color:var(--teal);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;text-decoration:none}
+.topics .chip:hover{border-color:var(--copper);color:var(--copper)}.topics small{color:var(--muted);font-weight:500}
+.widebox{width:min(1120px,94vw);position:relative;left:50%;transform:translateX(-50%)}
+.widebox .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}.widebox .list a{margin:0}.widebox .dek{max-width:760px}
+.topic-group{margin:10px 0 34px}.topic-group h2 a{text-decoration:none;color:var(--teal)}
 .gate{position:fixed;inset:0;background:rgba(19,41,46,.78);display:flex;align-items:center;justify-content:center;padding:14px;z-index:9}.gate[hidden]{display:none}
 .gate .box{background:var(--paper);max-width:600px;border-radius:18px;padding:26px;border-top:6px solid var(--teal);max-height:92vh;overflow:auto;font-size:14.5px}
 .gate h2{margin:0 0 10px}.gate button{border:0;border-radius:999px;padding:11px 22px;font-weight:600;cursor:pointer;background:var(--teal);color:#fff;margin-right:8px}
@@ -215,11 +220,67 @@ for idx, (p, slug) in enumerate(slugs):
     items.append(f'<a href="{path}"><b>{e(p["title"])}</b><span>{e(desc)}</span></a>')
 
 trail = [("Home", "/"), ("Explainers", "/explainers/")]
+
+# ---- topic hubs: one landing page per category, and a grouped explainers index ----
+TOPIC_INTRO = {
+    "Cyber law": "Online fraud, digital arrest scams, hacking and identity theft: what Indian law says and what to do when it happens to you.",
+    "Technology": "How Indian law regulates platforms, apps and the internet: safe harbour, takedowns, blocking orders and your remedies as a user.",
+    "AI & law": "Deepfakes, AI-generated content, copyright and AI training, and the rules India has made for artificial intelligence.",
+    "Data privacy": "Your rights over personal data under the Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025.",
+    "Entertainment & media": "Film certification, piracy, personality rights, celebrity deepfakes and the law that governs films, music and streaming.",
+    "Sports & gaming": "Sports governance, athletes' rights, sports disputes, e-sports and the ban on real-money online games.",
+    "Consumer": "Your rights as a buyer online and offline: dark patterns, hidden charges, refunds and how to complain.",
+    "Constitutional": "Fundamental rights, the limits of State power and landmark constitutional judgments, explained in plain language.",
+    "Criminal": "FIRs, arrest, bail and the new criminal laws (BNS, BNSS and BSA), explained for citizens.",
+    "Civil": "Property disputes, accident compensation and everyday civil law questions.",
+    "Evidence": "How courts treat electronic records, WhatsApp chats and other evidence under the Bharatiya Sakshya Adhiniyam, 2023.",
+    "Administrative": "How government bodies must act: natural justice, reasoned orders and judicial review.",
+}
+TOPIC_ORDER = ["Cyber law", "Technology", "AI & law", "Data privacy", "Entertainment & media", "Sports & gaming",
+               "Consumer", "Constitutional", "Criminal", "Civil", "Evidence", "Administrative"]
+
+
+def topic_slug(c):
+    return re.sub(r"[^a-z0-9]+", "-", c.lower().replace("&", "and")).strip("-")
+
+
+by_cat = {}
+for p, slug in slugs:
+    by_cat.setdefault(p["cat"], []).append((p, slug))
+cats = [c for c in TOPIC_ORDER if c in by_cat] + [c for c in by_cat if c not in TOPIC_ORDER]
+
+
+def card(q, s2):
+    return f'<a href="/explainers/{s2}/"><b>{e(q["title"])}</b><span>{e(q["dek"])}</span></a>'
+
+
+chips = "".join(f'<a class="chip" href="/explainers/topic/{topic_slug(c)}/">{e(c)} <small>({len(by_cat[c])})</small></a>' for c in cats)
+for c in cats:
+    tpath = f"/explainers/topic/{topic_slug(c)}/"
+    ttrail = trail + [(c, tpath)]
+    intro = TOPIC_INTRO.get(c, f"Plain-language explainers on {c.lower()} in India.")
+    tld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": f"{c} in India: explainers | {NAME}",
+            "url": f"{SITE}{tpath}", "description": intro, "publisher": ORG, "inLanguage": "en-IN", "isAccessibleForFree": True,
+            "hasPart": [{"@type": "Article", "headline": q["title"], "url": f"{SITE}/explainers/{s2}/"} for q, s2 in by_cat[c]]},
+           crumb_ld(ttrail)]
+    others = "".join(f'<a class="chip" href="/explainers/topic/{topic_slug(x)}/">{e(x)}</a>' for x in cats if x != c)
+    write(f"explainers/topic/{topic_slug(c)}/index.html", page(
+        f"{c} in India Explained: Free Plain-Language Guides | {NAME}", intro, tpath,
+        f'<div class="widebox">{crumb_html(ttrail)}<span class="pill">Topic</span><h1>{e(c)} in India, explained</h1><p class="dek">{e(intro)}</p>'
+        f'<div class="list">{"".join(card(q, s2) for q, s2 in by_cat[c])}</div>'
+        f'<section class="related"><h2>Other topics</h2><p class="topics">{others}</p></section></div>',
+        tld, "website", active="explainers"))
+    urls.append((f"{SITE}{tpath}", TODAY))
+
+groups = "".join(
+    f'<section class="topic-group" id="{topic_slug(c)}"><h2><a href="/explainers/topic/{topic_slug(c)}/">{e(c)}</a></h2>'
+    f'<div class="list">{"".join(card(q, s2) for q, s2 in by_cat[c])}</div></section>' for c in cats)
 list_ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": f"Explainers | {NAME}",
             "url": f"{SITE}/explainers/", "publisher": ORG, "inLanguage": "en-IN", "isAccessibleForFree": True}, crumb_ld(trail)]
 write("explainers/index.html", page(f"Indian Law Explained in Plain Language: Free Explainers | {NAME}",
-      "Free plain-language explainers on Indian law: Supreme Court and High Court judgments, BNS, BNSS and other statutes, and your rights, by Doctrines & Laws.",
-      "/explainers/", f'{crumb_html(trail)}<h1>Explainers</h1><p class="dek">Each explainer takes a single judgment or statute and answers the question a non-lawyer would actually ask.</p><div class="list">{"".join(items)}</div>',
+      "Free plain-language explainers on Indian law: cyber law, AI, technology, data privacy, entertainment, sports and gaming, consumer rights, constitutional and criminal law.",
+      "/explainers/", f'<div class="widebox">{crumb_html(trail)}<h1>Explainers</h1><p class="dek">Each explainer takes a single judgment, statute or rule and answers the question a non-lawyer would actually ask. Browse by topic.</p>'
+      f'<p class="topics">{chips}</p>{groups}</div>',
       list_ld, "website", active="explainers"))
 
 # UPSC Law Optional desk (source: _upsc/)
@@ -286,6 +347,7 @@ llms = [f"# {NAME}", "",
         f"- [UPSC Law Optional]({SITE}/upsc-law/): study notes, answer frames and previous-year questions (2013 onwards) for every syllabus unit",
         "", "## Explainers", ""]
 llms += [f"- [{p['title']}]({SITE}/explainers/{slug}/): {p['dek']}" for p, slug in slugs]
+llms += ["", "## Explainer topics", ""] + [f"- [{c}]({SITE}/explainers/topic/{topic_slug(c)}/): {TOPIC_INTRO.get(c, '')}" for c in cats]
 llms += ["", "## UPSC Law Optional subjects", ""]
 llms += [f"- [{title}]({SITE}/upsc-law/{sl}/): Paper {paper}, {nu} units" for sl, title, paper, nu, nq in feat["subs"]]
 llms += ["", "## Optional", "", f"- [Sitemap]({SITE}/sitemap.xml)", f"- [RSS feed]({SITE}/feed.xml)", ""]
@@ -293,8 +355,8 @@ write("llms.txt", "\n".join(llms))
 
 # ---- homepage ----
 HOME_TITLE = "Doctrines & Laws | Indian Law, Explained: Free Explainers and UPSC Law Optional Notes"
-HOME_DESC = ("Free legal education by Doctrines & Laws. Plain-language explainers on Indian law, this week's Supreme Court rulings, "
-             f"know-your-rights guides and UPSC Law Optional notes with {feat['total']} PYQs.")
+HOME_DESC = ("Free legal education by Doctrines & Laws. Plain-language explainers on cyber law, AI, data privacy, consumer and "
+             f"constitutional rights, this week's Supreme Court rulings and UPSC Law Optional notes with {feat['total']} PYQs.")
 home_ld = [{"@context": "https://schema.org", **ORG},
            {"@context": "https://schema.org", "@type": "WebSite", "name": NAME, "alternateName": "Law, explained.",
             "url": SITE + "/", "inLanguage": "en-IN", "publisher": {"@type": "Organization", "name": NAME, "url": SITE + "/"}}]
