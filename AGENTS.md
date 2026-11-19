@@ -57,3 +57,10 @@
 
 ## Explainer enrichment fields
 Every POSTS entry may carry `faq:[[question, answerHtml], ...]` (2–3 real questions people search for; rendered as "Common questions" with FAQPage schema) and `src:[[label, officialUrl], ...]` (official government or court sites only). Give every new explainer both. Categories with topic hubs are listed in build.py TOPIC_ORDER; a new category needs a colour in index.html (CSS var + CAT map) and a TOPIC_INTRO line.
+
+### Deploy freeze until 18 December 2026
+Netlify showed 43.8 of 300 credits left on 19 Nov 2026 (billing period 18 Nov to 17 Dec). Until 18 December 2026:
+- Every commit message must contain `[skip netlify]`, so it is saved to GitHub without deploying. Weekly runs still prepare content, test it and commit it this way, and report "Committed, deploy queued for 18 Dec".
+- The only exception is an urgent legal-accuracy fix, at most one deploy, and only if Netlify shows 30 or more credits left.
+- On or after 18 December, the first normal push deploys everything queued.
+From each new billing period: at most one deploy a week, and check credits first (Team → Usage & billing). Stop deploying when fewer than 30 credits remain.
