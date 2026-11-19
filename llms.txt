@@ -1,0 +1,36 @@
+# Doctrines & Laws
+
+> Law, explained. A free legal-education initiative of Doctrines & Laws Chambers, New Delhi: plain-language explainers on Indian law for citizens and law students, and free UPSC Civil Services Law Optional study notes. General information only, not legal advice.
+
+## Main sections
+
+- [Home](https://doctrinesandlaws.netlify.app/): this week in court, know-your-rights guides, landmark cases, IPC to BNS section finder, official resources
+- [Explainers](https://doctrinesandlaws.netlify.app/explainers/): one judgment or statute per page, answered in plain English
+- [UPSC Law Optional](https://doctrinesandlaws.netlify.app/upsc-law/): study notes, answer frames and previous-year questions (2013 onwards) for every syllabus unit
+
+## Explainers
+
+- [Seven years in jail after acquittal: what does Article 21 owe you?](https://doctrinesandlaws.netlify.app/explainers/acquittal-compensation/): The Supreme Court awarded ₹30 lakh in public-law compensation and asked Parliament to enact a law on wrongful incarceration.
+- [Can I file an FIR at any police station? Zero FIR explained](https://doctrinesandlaws.netlify.app/explainers/zero-fir/): Yes. Under Section 173 of the BNSS, police must record a cognizable offence wherever it happened and transfer it. How to file, and what to do if refused.
+- [One dashboard for all your data permissions?](https://doctrinesandlaws.netlify.app/explainers/dpdp-consent-manager/): How Consent Managers under the DPDP Act, 2023 and Rule 4 of the DPDP Rules, 2025 are meant to work.
+- [Can a government order rely on case law invented by AI?](https://doctrinesandlaws.netlify.app/explainers/ai-hallucinated-citations/): The Bombay High Court quashed a customs order that cited judgments that do not exist.
+- [When does an autonomous body become “State”?](https://doctrinesandlaws.netlify.app/explainers/article-12-nbt/): The Supreme Court held that the National Book Trust is “State” under Article 12.
+- [Can the police summon you to “settle” a property dispute?](https://doctrinesandlaws.netlify.app/explainers/police-civil-disputes/): Police investigate crime; civil courts decide property disputes.
+- [“Law and order” or “public order”? The concentric circles test](https://doctrinesandlaws.netlify.app/explainers/public-order/): Why not every crime justifies preventive detention under Article 22.
+- [Can a WhatsApp screenshot alone get someone convicted?](https://doctrinesandlaws.netlify.app/explainers/whatsapp-evidence/): Admissibility is one hurdle; proving who wrote the message is another.
+- [Road accident? Interim relief without proving fault](https://doctrinesandlaws.netlify.app/explainers/mv-interim-relief/): Section 164A of the Motor Vehicles Act, 1988 provides for quick interim compensation.
+- [Can the State ban a protest just to manage traffic?](https://doctrinesandlaws.netlify.app/explainers/right-to-protest/): Article 19(1)(b), the public trust doctrine and the proportionality test.
+
+## UPSC Law Optional subjects
+
+- [Constitutional and Administrative Law](https://doctrinesandlaws.netlify.app/upsc-law/constitutional-administrative-law/): Paper I, 16 units
+- [International Law](https://doctrinesandlaws.netlify.app/upsc-law/international-law/): Paper I, 15 units
+- [Law of Crimes](https://doctrinesandlaws.netlify.app/upsc-law/law-of-crimes/): Paper II, 12 units
+- [Law of Torts](https://doctrinesandlaws.netlify.app/upsc-law/law-of-torts/): Paper II, 13 units
+- [Law of Contracts and Mercantile Law](https://doctrinesandlaws.netlify.app/upsc-law/contracts-mercantile-law/): Paper II, 13 units
+- [Contemporary Legal Developments](https://doctrinesandlaws.netlify.app/upsc-law/contemporary-legal-developments/): Paper II, 8 units
+
+## Optional
+
+- [Sitemap](https://doctrinesandlaws.netlify.app/sitemap.xml)
+- [RSS feed](https://doctrinesandlaws.netlify.app/feed.xml)

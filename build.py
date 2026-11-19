@@ -19,6 +19,11 @@ NAME = "Doctrines & Laws"
 FIRM = "Doctrines & Laws Chambers"
 ROOT = os.path.dirname(os.path.abspath(__file__))
 TODAY = datetime.date.today().isoformat()
+INDEXNOW_KEY = "bc132384cedc37a04eed05a67be7af63"  # IndexNow (Bing, Yandex, Seznam, Naver); the key file sits at the site root
+HEADLINKS = ('<link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/jpeg" sizes="96x96" href="/assets/crest-96.jpg">'
+             '<link rel="apple-touch-icon" href="/assets/crest-192.jpg"><link rel="manifest" href="/site.webmanifest">'
+             '<meta name="theme-color" content="#F6F1E7">'
+             '<link rel="alternate" type="application/rss+xml" title="Doctrines &amp; Laws: explainers" href="/feed.xml">')
 MONTHS = {m: i for i, m in enumerate(
     "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(), 1)}
 
@@ -140,7 +145,7 @@ def page(title, desc, path, body, jsonld, og_type="article", active=""):
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{url}">
-<link rel="icon" href="/assets/crest-96.jpg"><link rel="apple-touch-icon" href="/assets/crest-192.jpg"><meta name="theme-color" content="#F6F1E7">
+{HEADLINKS}
 <meta property="og:type" content="{og_type}"><meta property="og:site_name" content="{e(NAME)}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
 <meta property="og:url" content="{url}"><meta property="og:image" content="{SITE}/assets/og.png">
@@ -225,6 +230,56 @@ write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="htt
       + "".join(f"  <url><loc>{u}</loc><lastmod>{d}</lastmod></url>\n" for u, d in urls) + "</urlset>\n")
 write("robots.txt", f"User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n")
 
+# ---- discovery files: favicon, manifest, RSS feed, llms.txt, IndexNow key ----
+try:
+    from PIL import Image
+    ico = Image.open(os.path.join(ROOT, "assets/crest.jpg")).convert("RGBA")
+    ico.save(os.path.join(ROOT, "favicon.ico"), sizes=[(16, 16), (32, 32), (48, 48)])
+except Exception as ex:
+    print("favicon.ico skipped:", ex)
+write("site.webmanifest", json.dumps({
+    "name": "Doctrines & Laws: Indian law, explained", "short_name": "Doctrines & Laws",
+    "description": "Free legal education: plain-language explainers on Indian law and UPSC Law Optional notes.",
+    "start_url": "/", "scope": "/", "display": "browser", "lang": "en-IN",
+    "background_color": "#F6F1E7", "theme_color": "#F6F1E7",
+    "icons": [{"src": "/assets/crest-192.jpg", "sizes": "192x192", "type": "image/jpeg"},
+              {"src": "/assets/crest.jpg", "sizes": "240x240", "type": "image/jpeg"}]}, indent=1) + "\n")
+write(f"{INDEXNOW_KEY}.txt", INDEXNOW_KEY)
+
+
+def rfc822(iso):
+    d = datetime.date.fromisoformat(iso)
+    return d.strftime("%a, %d %b %Y 00:00:00 +0530")
+
+
+feed_items = "".join(
+    f"""<item><title>{e(p['title'])}</title><link>{SITE}/explainers/{slug}/</link><guid isPermaLink="true">{SITE}/explainers/{slug}/</guid>"""
+    f"""<category>{e(p['cat'])}</category><pubDate>{rfc822(month_iso(p.get('when')))}</pubDate><description>{e(p['dek'])}</description></item>\n"""
+    for p, slug in slugs)
+write("feed.xml", f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel>
+<title>Doctrines &amp; Laws: Indian law, explained</title><link>{SITE}/</link>
+<atom:link href="{SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+<description>Free plain-language explainers on Indian law: Supreme Court and High Court rulings, statutes and your rights. General information, not legal advice.</description>
+<language>en-IN</language><lastBuildDate>{rfc822(TODAY)}</lastBuildDate>
+<image><url>{SITE}/assets/crest-192.jpg</url><title>Doctrines &amp; Laws: Indian law, explained</title><link>{SITE}/</link></image>
+{feed_items}</channel></rss>
+""")
+
+llms = [f"# {NAME}", "",
+        "> Law, explained. A free legal-education initiative of Doctrines & Laws Chambers, New Delhi: plain-language explainers on Indian law "
+        "for citizens and law students, and free UPSC Civil Services Law Optional study notes. General information only, not legal advice.", "",
+        "## Main sections", "",
+        f"- [Home]({SITE}/): this week in court, know-your-rights guides, landmark cases, IPC to BNS section finder, official resources",
+        f"- [Explainers]({SITE}/explainers/): one judgment or statute per page, answered in plain English",
+        f"- [UPSC Law Optional]({SITE}/upsc-law/): study notes, answer frames and previous-year questions (2013 onwards) for every syllabus unit",
+        "", "## Explainers", ""]
+llms += [f"- [{p['title']}]({SITE}/explainers/{slug}/): {p['dek']}" for p, slug in slugs]
+llms += ["", "## UPSC Law Optional subjects", ""]
+llms += [f"- [{title}]({SITE}/upsc-law/{sl}/): Paper {paper}, {nu} units" for sl, title, paper, nu, nq in feat["subs"]]
+llms += ["", "## Optional", "", f"- [Sitemap]({SITE}/sitemap.xml)", f"- [RSS feed]({SITE}/feed.xml)", ""]
+write("llms.txt", "\n".join(llms))
+
 # ---- homepage ----
 HOME_TITLE = "Doctrines & Laws: free Indian law explainers and UPSC Law Optional notes"
 HOME_DESC = ("Free legal education by Doctrines & Laws: plain-language explainers on Indian law, this week's Supreme Court rulings, "
@@ -236,7 +291,7 @@ seo = f"""<!--SEO:START-->
 <title>{e(HOME_TITLE)}</title>
 <meta name="description" content="{e(HOME_DESC)}">
 <link rel="canonical" href="{SITE}/">
-<link rel="icon" href="/assets/crest-96.jpg"><link rel="apple-touch-icon" href="/assets/crest-192.jpg"><meta name="theme-color" content="#F6F1E7">
+{HEADLINKS}
 <link rel="stylesheet" href="/assets/site.css">
 <meta property="og:type" content="website"><meta property="og:site_name" content="{NAME}">
 <meta property="og:title" content="{e(HOME_TITLE)}">
