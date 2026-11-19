@@ -121,7 +121,7 @@ h1,h2{font-family:Fraunces,Georgia,serif;color:var(--teal);line-height:1.15}h1{f
 .meta{font-size:14px;color:var(--muted)}.list a{display:block;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:12px 0;text-decoration:none}
 .list b{display:block;font:600 21px Fraunces,Georgia,serif;color:var(--teal)}.list span{color:var(--muted);font-size:15px}
 @media(max-width:600px){body{font-size:16.5px}article{padding:20px 18px;border-radius:16px}.dek{font-size:17.5px}}
-.related{margin:8px 0 30px}.related h2{font-size:22px}
+.faqs{margin:26px 0 8px}.faqs h2{font-size:24px}details.faq{border-top:1px solid var(--line);padding:12px 0}details.faq summary{cursor:pointer;font-weight:600;color:var(--teal);font-size:17px}details.faq p{margin:8px 0 0}.srcs{font-size:14.5px;color:var(--muted);margin-top:18px}.related{margin:8px 0 30px}.related h2{font-size:22px}
 .topics{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 26px}.topics .chip{display:inline-block;border:1px solid var(--line);background:var(--paper);color:var(--teal);border-radius:999px;padding:7px 13px;font-size:14px;font-weight:600;text-decoration:none}
 .topics .chip:hover{border-color:var(--copper);color:var(--copper)}.topics small{color:var(--muted);font-weight:500}
 .widebox{width:min(1120px,94vw);position:relative;left:50%;transform:translateX(-50%)}
@@ -204,6 +204,17 @@ for idx, (p, slug) in enumerate(slugs):
            "inLanguage": "en-IN", "mainEntityOfPage": f"{SITE}{path}",
            "image": f"{SITE}/assets/og.png", "author": ORG, "publisher": ORG,
            "articleSection": p["cat"], "isAccessibleForFree": True}, crumb_ld(trail)]
+    faq_html = src_html = ""
+    if p.get("faq"):
+        faq_html = ('<section class="faqs"><h2>Common questions</h2>'
+                    + "".join(f'<details class="faq"><summary>{e(q)}</summary><p>{a}</p></details>' for q, a in p["faq"])
+                    + '</section>')
+        ld.append({"@context": "https://schema.org", "@type": "FAQPage",
+                   "mainEntity": [{"@type": "Question", "name": q,
+                                   "acceptedAnswer": {"@type": "Answer", "text": re.sub(r"<[^>]+>", "", a)}} for q, a in p["faq"]]})
+    if p.get("src"):
+        src_html = ('<p class="srcs"><b>Official sources:</b> '
+                    + " · ".join(f'<a href="{u}" rel="noopener">{e(t)}</a>' for t, u in p["src"]) + '</p>')
     ig = f'<p class="meta"><a href="https://www.instagram.com/p/{p["ig"]}/">See the carousel on Instagram</a> · <a href="/explainers/">All explainers</a></p>' if p.get("ig") else ""
     same = [x for x in slugs if x[0] is not p and x[0]["cat"] == p["cat"]]
     rest = [x for x in slugs if x[0] is not p and x[0]["cat"] != p["cat"]]
@@ -213,7 +224,7 @@ for idx, (p, slug) in enumerate(slugs):
                + '</div></section>')
     body = f"""{crumb_html(trail)}<article><span class="pill">{e(p['cat'])}</span>
 <h1>{e(p['title'])}</h1><p class="dek">{e(desc)}</p>
-<div>{p['body']}</div>
+<div>{p['body']}</div>{faq_html}{src_html}
 <p class="meta">{e(p.get('when', ''))} · General information, not legal advice.</p>{ig}</article>{related}"""
     write(f"explainers/{slug}/index.html", page(f"{p['title']} | {NAME}", desc, path, body, ld, active="explainers"))
     urls.append((f"{SITE}{path}", TODAY))
@@ -230,6 +241,9 @@ TOPIC_INTRO = {
     "Entertainment & media": "Film certification, piracy, personality rights, celebrity deepfakes and the law that governs films, music and streaming.",
     "Sports & gaming": "Sports governance, athletes' rights, sports disputes, e-sports and the ban on real-money online games.",
     "Consumer": "Your rights as a buyer online and offline: dark patterns, hidden charges, refunds and how to complain.",
+    "IP & trademarks": "Trademarks, copyright and brand protection for creators, startups and small businesses, explained in plain language.",
+    "Employment": "Your rights at work under the four labour codes: wages, gratuity, appointment letters, gig work and how to complain.",
+    "Tax": "Tax questions people actually ask, explained under the Income-tax Act, 2025.",
     "Constitutional": "Fundamental rights, the limits of State power and landmark constitutional judgments, explained in plain language.",
     "Criminal": "FIRs, arrest, bail and the new criminal laws (BNS, BNSS and BSA), explained for citizens.",
     "Civil": "Property disputes, accident compensation and everyday civil law questions.",
@@ -237,7 +251,7 @@ TOPIC_INTRO = {
     "Administrative": "How government bodies must act: natural justice, reasoned orders and judicial review.",
 }
 TOPIC_ORDER = ["Cyber law", "Technology", "AI & law", "Data privacy", "Entertainment & media", "Sports & gaming",
-               "Consumer", "Constitutional", "Criminal", "Civil", "Evidence", "Administrative"]
+               "Consumer", "IP & trademarks", "Employment", "Tax", "Constitutional", "Criminal", "Civil", "Evidence", "Administrative"]
 
 
 def topic_slug(c):

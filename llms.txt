@@ -11,6 +11,12 @@
 ## Explainers
 
 - [Seven years in jail after acquittal: what does Article 21 owe you?](https://doctrinesandlaws.netlify.app/explainers/acquittal-compensation/): The Supreme Court awarded ₹30 lakh in public-law compensation and asked Parliament to enact a law on wrongful incarceration.
+- [How do I protect my brand name? Trademark basics in India](https://doctrinesandlaws.netlify.app/explainers/trademark-basics/): File online with IP India for ₹4,500 a class if you are an individual, startup or small business. What registration protects, and what ™ and ® mean.
+- [Can an online seller refuse a return or a refund?](https://doctrinesandlaws.netlify.app/explainers/online-returns-refunds/): Not if the product is defective, fake, not as described or delivered late. What the e-commerce rules say, and how to complain if a platform won’t budge.
+- [New labour codes: what changed for employees?](https://doctrinesandlaws.netlify.app/explainers/labour-codes/): Four codes replaced 29 labour laws on 21 November 2025. Appointment letters, gratuity after one year for fixed-term staff, and what else to know.
+- [How is crypto taxed in India? The 30% rule explained](https://doctrinesandlaws.netlify.app/explainers/crypto-tax/): Gains on crypto and other virtual digital assets are taxed at a flat 30%, with 1% TDS on sales. What changed under the Income-tax Act, 2025.
+- [How many SIM cards can be in your name? Limits and penalties](https://doctrinesandlaws.netlify.app/explainers/sim-cards-in-your-name/): Nine across India, six in J&K, Assam and the North-East. How to check the numbers issued in your name, and block the ones you don’t use.
+- [Is esports legal in India? What the Online Gaming Act says](https://doctrinesandlaws.netlify.app/explainers/esports-law/): Yes. The Online Gaming Act, 2025 recognises e-sports as competitive sport, separate from banned real-money games. How recognition and registration work.
 - [Lost money to an online fraud? What to do in the first hour](https://doctrinesandlaws.netlify.app/explainers/online-fraud-first-hour/): Call 1930 or report on cybercrime.gov.in at once, then tell your bank. Speed decides whether the money can be frozen before it moves on.
 - [Is there such a thing as a “digital arrest”?](https://doctrinesandlaws.netlify.app/explainers/digital-arrest/): No. Indian law has no procedure for arresting anyone over a video call. How the scam works, and what the Supreme Court has ordered.
 - [When must a social media platform take down a post?](https://doctrinesandlaws.netlify.app/explainers/platform-takedowns/): Section 79 of the IT Act shields platforms only if they act on lawful orders. Since February 2026 the deadline is three hours, not 36.
@@ -41,6 +47,9 @@
 - [Entertainment & media](https://doctrinesandlaws.netlify.app/explainers/topic/entertainment-and-media/): Film certification, piracy, personality rights, celebrity deepfakes and the law that governs films, music and streaming.
 - [Sports & gaming](https://doctrinesandlaws.netlify.app/explainers/topic/sports-and-gaming/): Sports governance, athletes' rights, sports disputes, e-sports and the ban on real-money online games.
 - [Consumer](https://doctrinesandlaws.netlify.app/explainers/topic/consumer/): Your rights as a buyer online and offline: dark patterns, hidden charges, refunds and how to complain.
+- [IP & trademarks](https://doctrinesandlaws.netlify.app/explainers/topic/ip-and-trademarks/): Trademarks, copyright and brand protection for creators, startups and small businesses, explained in plain language.
+- [Employment](https://doctrinesandlaws.netlify.app/explainers/topic/employment/): Your rights at work under the four labour codes: wages, gratuity, appointment letters, gig work and how to complain.
+- [Tax](https://doctrinesandlaws.netlify.app/explainers/topic/tax/): Tax questions people actually ask, explained under the Income-tax Act, 2025.
 - [Constitutional](https://doctrinesandlaws.netlify.app/explainers/topic/constitutional/): Fundamental rights, the limits of State power and landmark constitutional judgments, explained in plain language.
 - [Criminal](https://doctrinesandlaws.netlify.app/explainers/topic/criminal/): FIRs, arrest, bail and the new criminal laws (BNS, BNSS and BSA), explained for citizens.
 - [Civil](https://doctrinesandlaws.netlify.app/explainers/topic/civil/): Property disputes, accident compensation and everyday civil law questions.

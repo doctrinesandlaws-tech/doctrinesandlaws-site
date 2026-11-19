@@ -54,3 +54,6 @@
 - Every push to `main` is a production deploy and costs 15 credits (20 a month at most, and bandwidth also uses credits). If credits run out, the site goes offline until the next cycle.
 - Batch changes: aim for one deploy a week (the Saturday run). For work-in-progress commits, put `[skip netlify]` in the commit message so Netlify does not deploy; the next normal commit deploys everything.
 - Never push to fix something cosmetic on its own; queue it for the weekly deploy. Urgent legal-accuracy fixes are the exception.
+
+## Explainer enrichment fields
+Every POSTS entry may carry `faq:[[question, answerHtml], ...]` (2–3 real questions people search for; rendered as "Common questions" with FAQPage schema) and `src:[[label, officialUrl], ...]` (official government or court sites only). Give every new explainer both. Categories with topic hubs are listed in build.py TOPIC_ORDER; a new category needs a colour in index.html (CSS var + CAT map) and a TOPIC_INTRO line.
