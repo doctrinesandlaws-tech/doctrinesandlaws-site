@@ -12,6 +12,7 @@ import notes_p1, notes_p2, craft_p1, craft_p2  # noqa: E402
 from approach2026 import A as APPROACH  # noqa: E402
 from y2026 import Y2026  # noqa: E402
 from seo import UNIT as SEO_UNIT  # noqa: E402
+import study as STUDY  # noqa: E402
 
 e = html.escape
 
@@ -52,6 +53,17 @@ table.u-t{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--
 .u-flow{font:600 14px Inter;background:var(--cream);border:1px dashed var(--copper);border-radius:10px;padding:10px 12px}
 .u-ap{margin-top:6px;font-size:14.5px;background:var(--cream);border-radius:10px;padding:8px 10px}.u-ap b{color:var(--teal)}
 .u-method li{margin:6px 0}
+.u-unit.u-notes h3{font:600 22px/1.3 Fraunces,Georgia,serif;text-transform:none;letter-spacing:0;color:var(--teal);margin:28px 0 8px;padding-top:16px;border-top:1px solid var(--line);scroll-margin-top:84px}
+.u-unit.u-notes h3:first-of-type{border-top:0;padding-top:0;margin-top:10px}
+.u-notes h4{font:700 15px Inter,system-ui,sans-serif;color:var(--teal);margin:16px 0 6px}
+.u-notes p,.u-notes li{font-size:16.5px;line-height:1.75}.u-notes ul,.u-notes ol{padding-left:22px;margin:8px 0}.u-notes li{margin:5px 0}
+.u-notes i{color:var(--teal)}
+.u-toc{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 18px}.u-toc a{font:500 13px Inter;padding:5px 11px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--teal);background:var(--cream)}
+.u-toc a:hover{border-color:var(--copper-2);color:var(--copper)}
+.u-rev{background:#FBF4EA;border:1px solid #EBD9C2;border-left:4px solid var(--copper);border-radius:12px;padding:12px 16px;margin:16px 0}
+.u-rev p:first-child{margin-top:0}.u-nt td,.u-nt th{font-size:14.5px;vertical-align:top}
+.u-jump{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}.u-jump a{font:600 13.5px Inter;text-decoration:none;padding:7px 14px;border-radius:999px;background:var(--teal);color:#fff}
+.u-jump a+a{background:var(--paper);color:var(--teal);border:1px solid var(--line)}
 .u-cards{display:grid;gap:12px;margin:18px 0}
 .u-card{display:block;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 18px;text-decoration:none;color:var(--ink);transition:border-color .2s,transform .2s;scroll-margin-top:84px}
 .u-card:hover{border-color:var(--copper-2);transform:translateY(-1px)}
@@ -72,6 +84,7 @@ document.querySelectorAll('.u-card,.u-unit').forEach(function(s){s.hidden=q&&s.g
 
 
 def load():
+    SN = STUDY.load_all()
     pyq = json.load(open(os.path.join(HERE, "pyq.json"), encoding="utf-8"))
     by = {s["subject"]: s for s in pyq}
     out = []
@@ -85,7 +98,7 @@ def load():
             for c, un, sub, qid, marks, text in Y2026:
                 if c == code and un == n:
                     qs.append({"y": 2026, "q": f"{qid}, {marks} marks", "t": text, "sub": sub, "new": True, "ap": APPROACH.get(qid, "")})
-            units.append({"n": n, "title": t["title"].rstrip("."), "qs": qs, "note": notes.get(n), "craft": CRAFT[code].get(n)})
+            units.append({"n": n, "title": t["title"].rstrip("."), "qs": qs, "note": notes.get(n), "craft": CRAFT[code].get(n), "study": SN.get((code, n))})
         misc = topics.get(99, {"qs": []})["qs"]
         out.append(dict(slug=slug, title=title, paper=paper, code=code, short=short, units=units, misc=misc))
     return out
@@ -117,8 +130,15 @@ def unit_html(u, standalone=False):
         stat = f'Asked <b>{len(u["qs"])}</b> time{"s" if len(u["qs"]) != 1 else ""} · {years[0]}'
     n = u["note"] or {}
     c = u.get("craft") or {}
-    parts = [f'<section class="u-unit" id="u{u["n"]}"><span class="u-stat">Syllabus unit {u["n"]} · {stat}</span>',
-             f'<h2>{"Syllabus: " if standalone else ""}{e(u["title"])}</h2>']
+    parts = []
+    if standalone and u.get("study"):
+        body, toc = STUDY.render(u["study"])
+        mins = max(3, round(STUDY.words(u["study"]) / 200))
+        tocl = "".join(f'<a href="#{i}">{e(t)}</a>' for i, t in toc)
+        parts.append(f'<section class="u-unit u-notes" id="notes"><span class="u-stat">Study notes · about {mins} min read</span>'
+                     f'<h2>Study notes</h2><nav class="u-toc" aria-label="In these notes">{tocl}</nav>{body}</section>')
+    parts += [f'<section class="u-unit" id="u{u["n"]}"><span class="u-stat">Syllabus unit {u["n"]} · {stat}</span>',
+              f'<h2>{"Answer writing: " if standalone and u.get("study") else ("Syllabus: " if standalone else "")}{e(u["title"])}</h2>']
     if c.get("decode"):
         parts.append(f'<div class="u-decode"><b>Decode the demand.</b> {e(c["decode"])}</div>')
     if c.get("intro"):
@@ -201,13 +221,14 @@ def build(page, write, SITE, NAME, ORG, TODAY):
             body = (CSS + crumbs(items)
                     + f'<div class="u-hero"><span class="pill">UPSC Law Optional · Paper {s["paper"]} · Unit {u["n"]}</span>'
                     f'<h1>{e(u["label"])}</h1>'
-                    f'<p class="dek">{e(s["title"])} for the UPSC Civil Services (Main) Law optional: how to decode the question, an answer frame, key provisions, leading cases and {qline}.</p>'
-                    f'<p class="meta"><a href="{spath}">All {len(s["units"])} units of {e(s["title"])}</a>{" · <a href=\"#pyq\">Jump to the questions</a>" if nq else ""}</p></div>'
+                    f'<p class="dek">{e(s["title"])} for the UPSC Civil Services (Main) Law optional: full study notes, how to decode the question, an answer frame, leading cases and {qline}.</p>'
+                    f'<p class="meta"><a href="{spath}">All {len(s["units"])} units of {e(s["title"])}</a></p>'
+                    + ('<div class="u-jump">' + ('<a href="#notes">Study notes</a>' if u.get("study") else "") + f'<a href="#u{u["n"]}">Answer writing</a>' + ('<a href="#pyq">Past questions</a>' if nq else "") + '</div>') + '</div>'
                     + unit_html(u, standalone=True) + pn
                     + f'<h2 style="font-size:22px;margin-top:30px">Other units in {e(s["title"])}</h2><ol class="u-idx" style="list-style:none;padding-left:0">{others}</ol>'
                     + '<p class="u-note">Notes are original summaries prepared from the Constitution, statutes, treaties and judgments; check the full text of a judgment before citing it. IPC sections are given with their BNS, 2023 equivalents. General information for exam preparation, not legal advice.</p>')
             title = f"{u['label']}: UPSC Law Optional notes, cases & PYQs"
-            desc = (f"{u['label']} for UPSC Law Optional Paper {s['paper']}: answer frame, key provisions, leading cases"
+            desc = (f"{u['label']}: UPSC Law Optional Paper {s['paper']} study notes, answer frame, leading cases"
                     + (f" and {nq} PYQs from {y0} to {y1}." if nq and y0 != y1 else f" and the {y0} PYQ." if nq else "."))
             ld = [{"@context": "https://schema.org", "@type": "LearningResource", "name": title, "description": desc,
                    "url": f"{SITE}{u['path']}", "inLanguage": "en-IN", "educationalLevel": "Civil Services (Main) Examination",
